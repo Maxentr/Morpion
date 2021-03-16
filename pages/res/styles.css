@@ -1,0 +1,163 @@
+:root {
+   --main-background: #b33939;
+   --main-white: #ecf0f1;
+   --button-green: #449D44;
+   --main-red: #eb4d4b;
+   --main-gray: #4D4D4D;
+   --main-blue: #31B0D5;
+}
+@font-face {
+   font-family: 'YesterdayDream';
+   src: url('fonts/YesterdayDream.otf');
+}
+/* GENERAL */
+* {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+body {
+   background-color: var(--main-background);
+}
+/* CLASSES GENERALES */
+.center-container {
+   margin-left: auto;
+   margin-right: auto;
+}
+.container {
+   text-align: center;
+   width: 500px;
+   background-color: var(--main-white);
+   border-radius: 20px;
+}
+.button {
+   background-color: var(--button-green);
+   color: var(--main-white);
+   border: none;
+   border-radius: 5px;
+   padding: 5px;
+   font-weight: 700;
+}
+
+/* TITRE JEU */
+.morpion-title {
+   margin: 3% 0 2% 0;
+   text-align: center;
+   font-size: 50px;
+   color: var(--main-white);
+   margin: 10px 0 5px 0 ;
+   font-family: YesterdayDream, sans-serif;
+}
+/* MENU PRINCIPAL */
+#menu-principal > form {
+   padding-top: 50px;
+   padding-bottom: 20px;
+}
+#menu-principal > form > input {
+   text-align: center;
+   width: 380px;
+   height: 25px;
+   padding: 3px;
+}
+#menu-principal > form > button {
+   margin-top: 10px;
+   text-align: center;
+   width: 380px;
+}
+
+/* MENU DES SALONS */
+#menu-partie > div {
+   padding-top: 30px;
+   padding-bottom: 20px;
+   text-align: center;
+   width: 500px;
+   height: auto;
+   background-color: var(--main-white);
+   border-radius: 20px;
+}
+#partie-container > h2 {
+   font-size: 35px;
+   text-decoration: underline;
+   margin-bottom: 20px;
+}
+.table-parties {
+   border: none;
+   margin: 0 auto;
+ }
+ 
+.table-parties tr {
+   border: none;
+   padding: 20px;
+ }
+ .table-parties td {
+   border-right: 10px solid transparent;
+ }
+.table-parties p {
+   margin-top: 20px;
+   font-size: 25px;
+   display: inline-block;
+   vertical-align: middle;
+}
+.table-parties button {
+   margin-top: 20px;
+   background-color: #ee5253;
+   display: inline-block;
+   vertical-align: middle;
+   width: auto;
+   height: 27px;
+}
+#btn-partie-privee {
+   background-color: #06a8d1;
+}
+/* AFFICHAGE DU JEU */
+.grid-jeu {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   grid-template-rows: repeat(3, 1fr);
+   grid-column-gap: 7px;
+   grid-row-gap: 7px;
+   height: fit-content;
+   width: fit-content;
+}
+.btn-jeu {
+   width: 19vh;
+   max-width: 25vh;
+   height: 19vh;  
+   max-height: 25vh;
+   background-color: var(--main-white);
+   border: none;
+   border-radius: 10px;
+}
+.btn0 { grid-area: 3 / 1 / 4 / 2; }
+.btn1 { grid-area: 3 / 2 / 4 / 3; }
+.btn2 { grid-area: 3 / 3 / 4 / 4; }
+.btn3 { grid-area: 2 / 1 / 3 / 2; }
+.btn4 { grid-area: 2 / 2 / 3 / 3; }
+.btn5 { grid-area: 2 / 3 / 3 / 4; }
+.btn6 { grid-area: 1 / 1 / 2 / 2; }
+.btn7 { grid-area: 1 / 2 / 2 / 3; }
+.btn8 { grid-area: 1 / 3 / 2 / 4; }
+#info-jeu {
+   text-align: center;
+   margin-top: 20px;
+   font-size: 30px;
+   color: var(--main-white);
+}
+/* AFFICHAGE FIN DU JEU */
+#menu-fin {
+   padding: 25px 0;
+   width: 450px;
+   background-color: var(--main-white);
+   font-size: 30px;
+}
+#menu-fin p {
+   margin-bottom: 20px;
+}
+#btn-rejouer {
+   width: 100px;
+   margin-right: 25px;
+}
+#btn-quitter {
+   width: 100px;
+   background-color: var(--main-red);
+}
