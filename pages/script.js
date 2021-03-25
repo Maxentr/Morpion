@@ -1,105 +1,89 @@
 $(function() {
     const socket = io();
-    let pseudo;
-    let idPartie;
-    let idJoueur;
-    let positionJeu;
-    let grilleJeu = [];
-    let privee = 0;
+    let nickname;
+    let idGame;
+    let idPlayer;
+    let turn;
+    let gameboard = [];
+    let privatee = 0;
     
     //Si il y a un lien
-    let unLien = window.location.href;
-    unLien = unLien.substr(unLien.indexOf('?')+1, unLien.length - unLien.indexOf('?')); 
+    let link = window.location.href;
+    link = link.substr(link.indexOf('?')+1, link.length - link.indexOf('?')); 
     //Si il n'y a pas de lien
-    if(unLien.indexOf('http') != -1) unLien = undefined;
+    if(link.indexOf('http') !== -1) link = undefined;
     //Si le jeu est en mode portrait
     //Refresh la page si elle vient d'un historique
     if(PerformanceNavigation.type === 2) LocationReload(true);
 
     //Quand la page est fermé
     window.onbeforeunload = function() {
-        if(pseudo !== undefined) socket.emit('suppPseudo', pseudo);
-        if(idPartie !== undefined) socket.emit('suppRoom', idPartie, pseudo);
+        if(nickname !== undefined) socket.emit('deleteNickname', nickname);
+        if(idGame !== undefined) socket.emit('deletePlayerInRoom', idGame, nickname);
     }
 
-    //Quand le pseudo est rentré alors on le vérifie
+    //Quand le nickname est rentré alors on le vérifie
     $('.form-menu-principal').submit(function(e) {
        e.preventDefault();
-        pseudo = $('#input-menu-principal').val();
-        socket.emit('setPseudo', pseudo);
+        nickname = $('#input-menu-principal').val();
+        socket.emit('setNickname', nickname);
     });
 
-    //Si le pseudo n'est pas valide / déjà pris
-    socket.on('pseudoRefuse', function(err) {
+    //Si le nickname n'est pas valide / déjà pris
+    socket.on('invalidNickname', function() {
         let temp_input = $('#input-menu-principal');
-        pseudo = "";
+        nickname = "";
         temp_input.val('');
-        temp_input.attr('placeholder', 'Pseudo déjà pris !');
+        temp_input.attr('placeholder', 'nickname déjà pris !');
     });
 
     //Si il est valide alors on affiche les salons
-    socket.on('pseudoValide', function(lesParties) {
-        idJoueur = socket.id;
-        if(unLien != undefined) {
-            socket.emit('joinRoom', undefined, pseudo, idJoueur, unLien);
+    socket.on('validNickname', function(games) {
+        idPlayer = socket.id;
+        if(link !== undefined) {
+            socket.emit('joinGame', undefined, nickname, idPlayer, link);
         }
         else {
-            $('form-menu-principal').attr('disabled', true);
-            $('form-menu-principal button').attr('disabled', true);
+            $('.form-menu-principal').attr('disabled', true);
+            $('.form-menu-principal button').attr('disabled', true);
             $('#menu-principal').attr('hidden', true);
             $('#menu-partie').attr('hidden', false);
-            rafraichirLAffichageDesParties(lesParties);
+            rafraichirLAffichageDesParties(games);
         }
     });
-
-    //Bouton pour rafraichir l'affichage des salons
-    /*$('.salon-flex').on("click", "#refresh", function() {
-
-        let ref = $('#refresh');
-        ref.addClass('animate');
-        ref.one('animationend',
-            function (e) {
-                ref.removeClass('animate');
-                socket.emit('refresh', idJoueur);
-            });
-    });
-    socket.on('refreshed', function(lesParties) {
-        refreshRoom(lesParties);
-    });
-    */
 
     //Si le client veut rejoindre un salon
     $('#partie-container').on("click", ".btn-join", function(){
-        idPartie = $(this).val();
-        socket.emit('joinRoom', idPartie, pseudo, idJoueur);
+        idGame = $(this).val();
+        socket.emit('joinGame', idGame, nickname, idPlayer);
     });
     // Si le client veut créer une partie publique
     $('#menu-partie div').on("click", "#btn-partie-publique", function() {
         //Envoie d'une demande pour créer une partie
-        idPartie = -9;
-        privee = 0;
-        socket.emit('createRoom', pseudo, idJoueur, privee)
+        idGame = -9;
+        privatee = 0;
+        socket.emit('createGame', nickname, idPlayer, privatee)
     });
     $('#menu-partie div').on("click", "#btn-partie-privee", function() {
         //Envoie d'une demande pour créer une partie
-        idPartie = -9;
-        privee = 1;
-        socket.emit('createRoom', pseudo, idJoueur, privee);
+        idGame = -9;
+        privatee = 1;
+        socket.emit('createGame', nickname, idPlayer, privatee);
     });
-    socket.on('PartieValide', function(unIdPartie, unLien, tempPrivee) {
+    socket.on('validGame', function(gameId, link, privateState) {
         //Partie validée, affichage de celle-ci
-        idPartie = unIdPartie;
-        privee = tempPrivee;
+        idGame = gameId;
+        privatee = privateState;
         $('#menu-partie').attr('hidden', true);
         $('#menu-jeu').attr('hidden', false);
         $('.allowCopy').attr('hidden',false);
-        if(privee == 0) { 
+        if(privatee === 0) {
             $('#info-jeu').text("En attente d'un adversaire ...");
             $('.allowCopy').attr('hidden', true);    
         }
         else {
             $('#info-jeu').text("Cliquer sur la boite pour copier le lien dans le presse papier.");
-            $('.allowCopy').val(window.location.href + "?" + unLien);
+            $('.allowCopy').val(window.location.href + "?" + link);
         }
     });
 
@@ -113,101 +97,101 @@ $(function() {
     });
 
     //Si le salon qu'il veut rejoindre est full
-    socket.on('erreurRoom', function(msg) {
+    socket.on('errorJoinGame', function() {
         window.location = window.location.pathname;
     });
     //Si le client a reussit à rejoindre le salon alors on commence la partie
-    socket.on('startJeu', function(lesJoueurs, unIdPartie) {
-        idPartie = unIdPartie;
-        if(lesJoueurs != undefined) positionJeu = lesJoueurs.indexOf(pseudo);
+    socket.on('startGame', function(players, gameId) {
+        idGame = gameId;
+        if(players != undefined) turn = players.indexOf(nickname);
         $('#menu-principal').attr('hidden', true);
         $('#menu-partie').attr('hidden', true);
         $('#menu-fin').attr('hidden', true);
         $('#menu-jeu').attr('hidden', false);
-        socket.emit('debutJeu', idPartie, pseudo, idJoueur);
+        socket.emit('beginGame', idGame, nickname, idPlayer);
     });
     //Si ton tour
-    socket.on('tonTour', function(uneGrilleJeu) {
-        grilleJeu = uneGrilleJeu;
-        rafraichirGrilleJeu(grilleJeu, null);
+    socket.on('yourTurn', function(refreshGameboard) {
+        gameboard = refreshGameboard;
+        refreshGameboardPls(gameboard, null);
         $('#info-jeu').text("C'est ton tour !");
         $('.btn-jeu').removeAttr("disabled", true);
     });
-    //Boutton du jeu
+    //Bouton du jeu
     $('#menu-jeu').on("click", ".btn-jeu", function() {
-        let placement = $(this).val();
-        if(grilleJeu[placement] === -1) {
-            rafraichirGrilleJeu(grilleJeu, placement);
+        let location = $(this).val();
+        if(gameboard[location] === -1) {
+            refreshGameboardPls(gameboard, location);
             $('.btn-jeu').attr("disabled", true);
             $('#info-jeu').text("En attente de ton tour.");
-            socket.emit('tourJeu', idPartie, placement, pseudo);
+            socket.emit('gameTurn', idGame, location, nickname);
         }
     });
     //Si c'est pas ton tour
-    socket.on('waitTour', function() {
+    socket.on('waitTurn', function() {
         $('#info-jeu').text("En attente de ton tour.");
     });
 
     //Fin du jeu affichage et reset des variables
-    socket.on('finJeu', function(name) {
+    socket.on('endGame', function(result) {
         let btnRes = $('#btn-rejouer');
-        let texteFin = $('#menu-fin p');
+        let endText = $('#menu-fin p');
         btnRes.attr('hidden', false);
         btnRes.attr('disabled', false);
         btnRes.text("Rejouer");
         $('#btn-quitter').attr('hidden', false);
         $('#menu-jeu').attr('hidden', true);
         $('#menu-fin').attr('hidden', false);
-        grilleJeu = [-1,-1,-1,-1,-1,-1,-1,-1,-1];
-        rafraichirGrilleJeu(grilleJeu, null);
-        if(name === "forfait") {
-            texteFin.text("L'adversaire à déclaré forfait !");
+        gameboard = [-1,-1,-1,-1,-1,-1,-1,-1,-1];
+        refreshGameboardPls(gameboard, null);
+        if(result === "forfait") {
+            endText.text("L'adversaire à déclaré forfait !");
             $('#btn-rejouer').attr('hidden', true);
         }
         else {
-            if(name === "egalite") texteFin.text("Egalité !");
-            else if(pseudo === name) texteFin.text("Tu as gagné !");
-            else texteFin.text("Tu as perdu !");
+            if(result === "egalite") endText.text("Egalité !");
+            else if(nickname === result) endText.text("Tu as gagné !");
+            else endText.text("Tu as perdu !");
         }
     });
     //Si l'adversaire leave
     socket.on('adversaireLeave', function() {
         $('#btn-rejouer').attr('hidden', true);
     });
-    //Si l'adversaire veut une revanche
-    socket.on('revanche', function(msg) {
-        if(msg == "annulee")  $('#btn-rejouer').attr('hidden', true);
+    //Si l'adversaire veut une rematch
+    socket.on('rematch', function(msg) {
+        if(msg === "annulee")  $('#btn-rejouer').attr('hidden', true);
         else $('#menu-fin p').text(msg);
     });
 
     //Si le client veut refaire une partie
     $('#menu-fin .block-btn').on("click", "#btn-rejouer", function() {
         let btnRes = $('#btn-rejouer');
-        socket.emit('restartJeu', idPartie);
+        socket.emit('restartGame', idGame);
         btnRes.attr('disabled', true);
         btnRes.text("En attente ...");
-        socket.emit('demandeRevanche', idPartie, pseudo);
+        socket.emit('requestRematch', idGame, nickname);
     });
     //Si le client ne veut pas refaire une partie
     $('#menu-fin .block-btn').on("click", "#btn-quitter", function() {
-        if(privee == 1) unLien = undefined;
+        if(privatee === 1) link = undefined;
         $('#btn-rejouer').attr('hidden', false);
-        socket.emit('suppRoom', idPartie, pseudo);
-        socket.emit('refresh', idPartie);
+        socket.emit('deletePlayerInRoom', idGame, nickname);
+        socket.emit('refresh', idGame);
         $('#menu-fin').attr('hidden', true);
         $('#menu-partie').attr('hidden', false);
-        idPartie = undefined;
+        idGame = undefined;
     });
     //Fonction d'affichage
-    function rafraichirLAffichageDesParties(lesParties) {
+    function rafraichirLAffichageDesParties(games) {
         $('#erreur p').text('');
         $('.partie-name').empty();
         $('.partie-button').empty();
 
         let temp_element = [];
         //Tri des parties privées et des parties en cours
-        lesParties.forEach(Element => {
-            if(Element.Etat == 0 || Element.privee != 1) {
+        games.forEach(Element => {
+            if(Element.state === 0 || Element.private !== 1) {
                 temp_element.push(Element);
             }
         });
@@ -220,14 +204,14 @@ $(function() {
             });
         }
     }
-    function rafraichirGrilleJeu(uneGrilleDeJeu, placement) {
-        if(placement !== null) {
-            uneGrilleDeJeu[placement] = positionJeu;
+    function refreshGameboardPls(gameboard, location) {
+        if(location !== null) {
+            gameboard[location] = turn;
         }
-        for(let i = 0; i < uneGrilleDeJeu.length; i++) {
+        for(let i = 0; i < gameboard.length; i++) {
             let temp_btn = ".btn" + i;
-            if (uneGrilleDeJeu[i] == 0)  $(temp_btn).css('background-color', "var(--main-blue)");
-            else if (uneGrilleDeJeu[i] == 1) $(temp_btn).css('background-color', "var(--main-gray)");
+            if (gameboard[i] === 0)  $(temp_btn).css('background-color', "var(--main-blue)");
+            else if (gameboard[i] === 1) $(temp_btn).css('background-color', "var(--main-gray)");
             else $(temp_btn).css('background-color', "var(--main-white)");
         }
     }

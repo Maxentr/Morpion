@@ -22,110 +22,113 @@ app.get('/res/img/paysageMode.png', (req, res) => {
     res.sendFile(__dirname + '/pages/res/img/paysageMode.png');
 });
 
-//VARIABLES
-let lesJoueurs = [];
-let lesParties = [];
+//letIABLES
+let players = [];
+let games = [];
+
 /*        
-let unePartieCree = {
-    id: idPartie,
-    lien: ,
-    nomPartie: pseudo,
-    nomJoueurs: [],
-    idJoueurs: [],
-    leTour: -1,
-    jeu: [-1,-1,-1,-1,-1,-1,-1,-1,-1],
-    Etat: 0,
-    privee:
+let createGame = {
+    id: idGame,
+    link: ,
+    nomPartie: nickname, A DELETE
+    namePlayers: [],
+    idPlayers: [],
+    turn: -1,
+    gameboard: [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+    state: 0,
+    private:
 }
-    // Si l'Etat est à 0: partie pas lancé, Si l'Etat est à 1: partie lancé, Si l'Etat est à 2: partie fini avec une demande pour rejouer,
+    // Si state est à 0: partie pas lancé, Si state est à 1: partie lancé, Si state est à 2: partie fini avec une demande pour rejouer,
 */
 //Setters et getters generaux
-function estUnPseudoValide(unPseudo) {
-    if(lesJoueurs.indexOf(unPseudo) === -1) {
-        lesJoueurs.push(unPseudo);
-        console.log(unPseudo + ' connected');
+function validNickname(nickname) {
+    if(players.indexOf(nickname) === -1) {
+        players.push(nickname);
+        console.log(nickname + ' connected');
         return true;
     }
     else return false;
 }
-function supprimerUnJoueur(unPseudo) {
-    lesJoueurs.splice(lesJoueurs.indexOf(unPseudo), 1);
-    console.log(unPseudo + ' disconnected');
+function deletePlayer(nickname) {
+    players.splice(players.indexOf(nickname), 1);
+    console.log(nickname + ' disconnected');
 }
-function createLien(uneLongueur) {
-    var resultat = '';
-    var liste = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var longueurListe = liste.length;
-    for ( var i = 0; i < uneLongueur; i++ ) {
-        resultat += liste.charAt(Math.floor(Math.random() * longueurListe));
+function createLink(length) {
+    let result = '';
+    let list = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let listLength = list.length;
+    for (let i = 0; i < length; i++ ) {
+        result += list.charAt(Math.floor(Math.random() * listLength));
     }
-    return resultat;
+    return result;
 }
 //Setters et getters pour une partie
-function getPositionJoueur(unId, unPseudo) {
-    return lesParties[unId].nomJoueurs.indexOf(unPseudo);
+function getPositionOfPlayer(id, nickname) {
+    return games[id].namePlayers.indexOf(nickname);
 }
-function getJoueurs(unId) {
-    return lesParties[unId].nomJoueurs;
+function getPlayers(id) {
+    return games[id].namePlayers;
 }
-function getNbJoueurs(unId) {
-    return lesParties[unId].nomJoueurs.length;
+function getNbPlayer(id) {
+    return games[id].namePlayers.length;
 }
-function getIdAvecLien(unLien) {
-    let resultat = false; 
-    lesParties.forEach(unePartie => {
-        if((unePartie.lien == unLien) === undefined) return false;
-        if (unePartie.lien == unLien) resultat = unePartie.id;
+function getIdWithLink(link) {
+    let result = false; 
+    games.forEach(game => {
+        if((game.link == link) === undefined) return false;
+        if (game.link == link) result = game.id;
     });
-    return resultat;
+    return result;
 }
-function getLien(unId) {
-    return lesParties[unId].lien;
+function getLink(id) {
+    return games[id].link;
 }
-function getPrivee(unId) {
-    return lesParties[unId].privee;
+function getTypeGame(id) {
+    return games[id].private;
 }
-function getEtat(unId) {
-    return lesParties[unId].Etat;
+
+function getStateGame(id) {
+    return games[id].state;
 }
-function setEtat(unId, unEtat) {
-    lesParties[unId].Etat = unEtat;
+function setStateGame(id, state) {
+    games[id].state = state;
 }
-function getLeProchainJoueur(unId) {
-    if(lesParties[unId].leTour === 1) lesParties[unId].leTour = 0;
-    else lesParties[unId].leTour = 1;
-    // On retourne le pseudo du joueur.
-    return lesParties[unId].idJoueurs[lesParties[unId].leTour];
+
+function getNextPlayer(id) {
+    if(games[id].turn === 1) games[id].turn = 0;
+    else games[id].turn = 1;
+    return games[id].idPlayers[games[id].turn];
 }
-function getLeJeu(unId) {
-    return lesParties[unId].jeu;
+
+function getGameboard(id) {
+    return games[id].gameboard;
 }
-function setLeJeu(unId, unPlacement, unPseudo) {
-    if(lesParties[unId].jeu[unPlacement] !== -1) return false;
+function updateGameboard(id, location, nickname) {
+    if(games[id].gameboard[location] !== -1) return false;
     else {
-        lesParties[unId].jeu[unPlacement] = getPositionJoueur(unId, unPseudo);
+        games[id].gameboard[location] = getPositionOfPlayer(id, nickname);
         return true;
     }
 }
 
-function checkVictoire(unId) {
-    for(var i = 0; i < getNbJoueurs(unId); i++) {
-        if((lesParties[unId].jeu[0] === i && lesParties[unId].jeu[1] === i && lesParties[unId].jeu[2] === i )//LIGNE HORIZONTALE DU BAS       
-        || (lesParties[unId].jeu[3] === i && lesParties[unId].jeu[4] === i && lesParties[unId].jeu[5] === i )//LIGNE HORIZONTALE DU MILIEU     
-        || (lesParties[unId].jeu[6] === i && lesParties[unId].jeu[7] === i && lesParties[unId].jeu[8] === i )//LIGNE HORIZONTALE DU HAUT 
-        || (lesParties[unId].jeu[0] === i && lesParties[unId].jeu[3] === i && lesParties[unId].jeu[6] === i )//LIGNE VERTICALE DE GAUCHE
-        || (lesParties[unId].jeu[1] === i && lesParties[unId].jeu[4] === i && lesParties[unId].jeu[7] === i )//LIGNE VERTICALE DE MILIEU
-        || (lesParties[unId].jeu[2] === i && lesParties[unId].jeu[5] === i && lesParties[unId].jeu[8] === i )//LIGNE VERTICALE DE DROITE
-        || (lesParties[unId].jeu[6] === i && lesParties[unId].jeu[4] === i && lesParties[unId].jeu[2] === i )//DIAGONALE HAUT GAUCHE VERS BAS DROIT
-        || (lesParties[unId].jeu[0] === i && lesParties[unId].jeu[4] === i && lesParties[unId].jeu[8] === i ))//DIAGONALE BAS GAUCHE VERS HAUT DROIT
+function checkVictory(id) {
+    for(let i = 0; i < getNbPlayer(id); i++) {
+        if((games[id].gameboard[0] === i && games[id].gameboard[1] === i && games[id].gameboard[2] === i )//LIGNE HORIZONTALE DU BAS       
+        || (games[id].gameboard[3] === i && games[id].gameboard[4] === i && games[id].gameboard[5] === i )//LIGNE HORIZONTALE DU MILIEU     
+        || (games[id].gameboard[6] === i && games[id].gameboard[7] === i && games[id].gameboard[8] === i )//LIGNE HORIZONTALE DU HAUT 
+        || (games[id].gameboard[0] === i && games[id].gameboard[3] === i && games[id].gameboard[6] === i )//LIGNE VERTICALE DE GAUCHE
+        || (games[id].gameboard[1] === i && games[id].gameboard[4] === i && games[id].gameboard[7] === i )//LIGNE VERTICALE DE MILIEU
+        || (games[id].gameboard[2] === i && games[id].gameboard[5] === i && games[id].gameboard[8] === i )//LIGNE VERTICALE DE DROITE
+        || (games[id].gameboard[6] === i && games[id].gameboard[4] === i && games[id].gameboard[2] === i )//DIAGONALE HAUT GAUCHE VERS BAS DROIT
+        || (games[id].gameboard[0] === i && games[id].gameboard[4] === i && games[id].gameboard[8] === i ))//DIAGONALE BAS GAUCHE VERS HAUT DROIT
         {
-            setEtat(unId, 0);
-            return gagnant = lesParties[unId].nomJoueurs[i];
+            setStateGame(id, 0);
+            return winner = games[id].namePlayers[i];
         }
     }
-    if(getLeJeu(unId).indexOf(-1) === -1){
-        setEtat(unId, 0);
-        return gagnant = "egalite";
+    if(getGameboard(id).indexOf(-1) === -1){
+        setStateGame(id, 0);
+        return winner = "egalite";
     }
     else return false;
 }
@@ -133,127 +136,127 @@ function checkVictoire(unId) {
 //CLIENT-SERVER
 io.on('connection', (socket) => {
 
-    //Demande pour avoir un pseudo
-    socket.on('setPseudo', function(pseudo) {
-        //Le pseudo n'est pas valide
-        if(estUnPseudoValide(pseudo) == false) {
-            let err = pseudo + " est déjà pris !";
-            socket.emit('pseudoRefuse', err);
+    //Demande pour avoir un nickname
+    socket.on('setNickname', function(nickname) {
+        //Le nickname n'est pas valide
+        if(validNickname(nickname) == false) {
+            let err = nickname + " est déjà pris !";
+            socket.emit('invalidNickname', err);
         }
         //Si il est valide
         else {
-            socket.emit('pseudoValide', lesParties);
+            socket.emit('validNickname', games);
         }
     });
 
     //Le client se déconnecte
-    socket.on('suppPseudo', function(pseudo){
-        supprimerUnJoueur(pseudo);
+    socket.on('deleteNickname', function(nickname){
+        deletePlayer(nickname);
     });
     //Le client veut rafraichir l'affichage des salons
-    socket.on('refresh', function(idJoueur) {
-        io.in(idJoueur).emit('refreshed', lesParties);
+    socket.on('refresh', function(idPlayer) {
+        io.in(idPlayer).emit('refreshed', games);
     });
 
     //Le client rejoint un salon 
-    socket.on('joinRoom', function(idPartie, pseudo, idJoueur, lien) {
+    socket.on('joinGame', function(idGame, nickname, idPlayer, link) {
         try {
-            if(lien != undefined) {
-                idPartie = getIdAvecLien(lien);
-                if(idPartie === false) throw new Error("Un lien n'est pas bon.");
+            if(link !== undefined) {
+                idGame = getIdWithLink(link);
+                if(idGame === false) throw new Error("Un link n'est pas bon.");
             }
             //Si il y a déjà 2 joueurs
-            if (getNbJoueurs(idPartie) === 2) throw new Error(lesParties[idPartie].nomPartie + " est full !");
+            if (getNbPlayer(idGame) === 2) throw new Error(games[idGame].nomPartie + " est full !");
             else {
                 //Sinon il rejoint et la partie commence
-                lesParties[idPartie].nomJoueurs.push(pseudo);
-                lesParties[idPartie].idJoueurs.push(idJoueur);
+                games[idGame].namePlayers.push(nickname);
+                games[idGame].idPlayers.push(idPlayer);
                 
                 //Il y a 2 joueurs donc on lance la partie
-                //L'Etat de la partie est à 1 soit lancé
-                setEtat(idPartie, 1);
+                //L'state de la partie est à 1 soit lancé
+                setStateGame(idGame, 1);
                 //On tire au hasard pour savoir qui commence
-                lesParties[idPartie].leTour = Math.floor(Math.random() * 2);
-                socket.join(getLien(idPartie));
-                console.log(pseudo + ' join ' + getLien(idPartie));
-                io.in(getLien(idPartie)).emit('startJeu', getJoueurs(idPartie),idPartie);
+                games[idGame].turn = Math.floor(Math.random() * 2);
+                socket.join(getLink(idGame));
+                console.log(nickname + ' join ' + getLink(idGame));
+                io.in(getLink(idGame)).emit('startGame', getPlayers(idGame),idGame);
             }
         }
         catch(e) {
-            console.log("trow" + e);
-            socket.emit('erreurRoom', e);
-            socket.emit('refreshed', lesParties);
+            console.log("throw" + e);
+            socket.emit('errorJoinGame', e);
+            socket.emit('refreshed', games);
         }
     });
     //Le client créer un salon
-    socket.on('createRoom', function(pseudo, idJoueur, unePartiePrivee) {
-        let idPartie = lesParties.length;
-        let unePartieCree = {
-            id: idPartie,
-            lien: createLien(15),
-            nomPartie: pseudo,
-            nomJoueurs: [pseudo],
-            idJoueurs: [idJoueur],
-            leTour: -1,
-            jeu: [-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            Etat: 0,
-            privee: unePartiePrivee
+    socket.on('createGame', function(nickname, idPlayer, privateState) {
+        let idGame = games.length;
+        let createGame = {
+            id: idGame,
+            link: createLink(15),
+            nomPartie: nickname,
+            namePlayers: [nickname],
+            idPlayers: [idPlayer],
+            turn: -1,
+            gameboard: [-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            state: 0,
+            private: privateState
         }
-        lesParties.push(unePartieCree);
-        socket.join(getLien(idPartie));
-        console.log(pseudo + ' join ' + getLien(idPartie));
-        socket.emit('PartieValide', idPartie, getLien(idPartie),getPrivee(idPartie));
+        games.push(createGame);
+        socket.join(getLink(idGame));
+        console.log(nickname + ' join ' + getLink(idGame));
+        socket.emit('validGame', idGame, getLink(idGame),getTypeGame(idGame));
     });
     //Le client se déconnecte
-    socket.on('suppRoom', function(idPartie, pseudo) {
+    socket.on('deletePlayerInRoom', function(idGame, nickname) {
         //Leave le socket
-        console.log("suppRoom idPartie: " + idPartie);
-        socket.leave(getLien(idPartie));
-        console.log(pseudo + ' leave ' + getLien(idPartie));
-        //On enleve le pseudo et on reduit de 1 le nombre de personne dans le salon
-        supprimerUnJoueur(pseudo);
-        lesParties[idPartie].nomJoueurs.splice(lesParties[idPartie].nomJoueurs.indexOf(pseudo), 1);
+        console.log("deletePlayerInRoom idGame: " + idGame);
+        socket.leave(getLink(idGame));
+        console.log(nickname + ' leave ' + getLink(idGame));
+        //On enleve le nickname et on reduit de 1 le nombre de personne dans le salon
+        deletePlayer(nickname);
+        games[idGame].namePlayers.splice(games[idGame].namePlayers.indexOf(nickname), 1);
         //Si il n'y a plus personne alors on supprime le salon
-        if(getNbJoueurs(idPartie) === 0) lesParties.splice(idPartie, 1);
+        if(getNbPlayer(idGame) === 0) games.splice(idGame, 1);
         //Si la personne qui se déconnecte etait dans une partie en cours
-        else if(getEtat(idPartie) === 1) {
-            io.in(getLien(idPartie)).emit('finJeu', "forfait");
+        else if(getStateGame(idGame) === 1) {
+            io.in(getLink(idGame)).emit('endGame', "forfait");
         }
-        else if(getEtat(idPartie) === 2) {
-            setEtat(idPartie, 0);
-            io.in(getLien(idPartie)).emit('revanche', "annulee");
+        else if(getStateGame(idGame) === 2) {
+            setStateGame(idGame, 0);
+            io.in(getLink(idGame)).emit('rematch', "annulee");
         }
     });
     //Début de la partie
-    socket.on('debutJeu', function(idPartie, pseudo, idJoueur) {
-        if(getPositionJoueur(idPartie, pseudo) === lesParties[idPartie].leTour) {
-            io.in(idJoueur).emit('tonTour', getLeJeu(idPartie));
+    socket.on('beginGame', function(idGame, nickname, idPlayer) {
+        if(getPositionOfPlayer(idGame, nickname) === games[idGame].turn) {
+            io.in(idPlayer).emit('yourTurn', getGameboard(idGame));
         }
         else {
-            io.in(idJoueur).emit('waitTour');
+            io.in(idPlayer).emit('waitTurn');
         }
     });
-    socket.on('tourJeu', function(idPartie, placement, pseudo) {
-        setLeJeu(idPartie, placement, pseudo);
-        //On regarde si quelqu'un a gagné si pas de gagnant
-        let resultat = checkVictoire(idPartie);
-        if(resultat == false) io.in(getLeProchainJoueur(idPartie)).emit('tonTour', getLeJeu(idPartie));
-        else io.in(getLien(idPartie)).emit('finJeu', resultat);
+    socket.on('gameTurn', function(idGame, placement, nickname) {
+        updateGameboard(idGame, placement, nickname);
+        //On regarde si quelqu'un a gagné si pas de winner
+        let result = checkVictory(idGame);
+        if(result === false) io.in(getNextPlayer(idGame)).emit('yourTurn', getGameboard(idGame));
+        else io.in(getLink(idGame)).emit('endGame', result);
     });
 
-    socket.on('demandeRevanche', function(idPartie, pseudo) {
-        io.in(getLien(idPartie)).emit('revanche', pseudo + " veut une revanche !");
+    socket.on('requestRematch', function(idGame, nickname) {
+        io.in(getLink(idGame)).emit('rematch', nickname + " veut une revanche !");
     });
     
-    socket.on('restartJeu', function(idPartie) {
+    socket.on('restartGame', function(idGame) {
         //Si l'adversaire à déjà demander la revanche
-        if(getEtat(idPartie) === 2) {
-            lesParties[idPartie].jeu = [-1,-1,-1,-1,-1,-1,-1,-1,-1];
-            lesParties[idPartie].leTour = Math.floor(Math.random() * 3);
-            io.in(getLien(idPartie)).emit('startJeu', undefined, idPartie);
+        if(getStateGame(idGame) === 2) {
+            games[idGame].gameboard = [-1,-1,-1,-1,-1,-1,-1,-1,-1];
+            games[idGame].turn = Math.floor(Math.random() * 2);
+            io.in(getLink(idGame)).emit('startGame', undefined, idGame);
         }
         //Sinon demande de revanche
-        else setEtat(idPartie, 2);
+        else setStateGame(idGame, 2);
     });
 });
 
