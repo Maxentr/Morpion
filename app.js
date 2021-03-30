@@ -2,9 +2,6 @@ const app = require('express')();
 const server = app.listen(process.env.PORT || 3000);
 const io = require('socket.io').listen(server);
 
-
-var server = app.listen(8810);
-var io = require('socket.io').listen(server);
 //ROUTING
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/pages/index.html');
