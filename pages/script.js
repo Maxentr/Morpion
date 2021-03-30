@@ -49,7 +49,7 @@ $(function() {
             $('.form-menu-principal button').attr('disabled', true);
             $('#menu-principal').attr('hidden', true);
             $('#menu-partie').attr('hidden', false);
-            rafraichirLAffichageDesParties(games);
+            refreshGameContainer(games);
         }
     });
 
@@ -184,7 +184,7 @@ $(function() {
         idGame = undefined;
     });
     //Fonction d'affichage
-    function rafraichirLAffichageDesParties(games) {
+    function refreshGameContainer(games) {
         $('#erreur p').text('');
         $('.partie-name').empty();
         $('.partie-button').empty();
@@ -192,11 +192,11 @@ $(function() {
         let temp_element = [];
         //Tri des parties privées et des parties en cours
         games.forEach(Element => {
-            if(Element.state === 0 || Element.private !== 1) {
+            if(Element.state == 0 || Element.private != 1) {
                 temp_element.push(Element);
             }
         });
-        if(temp_element.length === 0) {
+        if(temp_element.length == 0) {
             $('#erreur').text("Il n'y a pas de salon");
         }
         else {
