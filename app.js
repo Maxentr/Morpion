@@ -1,10 +1,10 @@
 const app = require('express')();
-const server = require('http').createServer(app);
-app.listen(process.env.PORT || 3000, function(){
-    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
+const server = app.listen(process.env.PORT || 3000);
 const io = require('socket.io').listen(server);
 
+
+var server = app.listen(8810);
+var io = require('socket.io').listen(server);
 //ROUTING
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/pages/index.html');
@@ -261,4 +261,7 @@ io.on('connection', (socket) => {
         //Sinon demande de revanche
         else setStateGame(idGame, 2);
     });
+});
+app.listen(process.env.PORT || 3000, function(){
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
