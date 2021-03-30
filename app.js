@@ -1,6 +1,9 @@
 const app = require('express')();
-const server = app.listen(process.env.PORT || 3000);
+const server = app.listen(process.env.PORT || 3000, function(){
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
 const io = require('socket.io').listen(server);
+
 
 //ROUTING
 app.get('/', (req, res) => {
@@ -9,20 +12,10 @@ app.get('/', (req, res) => {
 app.get('/script/script.js', (req, res) => {
     res.sendFile(__dirname + '/pages/script.js');
 });
-app.get('/res/styles.css', (req, res) => {
-    res.sendFile(__dirname + '/pages/res/styles.css');
-});
-app.get('/res/fonts/YesterdayDream.otf', (req, res) => {
-    res.sendFile(__dirname + '/pages/res/fonts/YesterdayDream.otf');
-});
-app.get('/res/img/refresh.png', (req, res) => {
-    res.sendFile(__dirname + '/pages/res/img/refresh.png');
-});
-app.get('/res/img/paysageMode.png', (req, res) => {
-    res.sendFile(__dirname + '/pages/res/img/paysageMode.png');
+app.get('/pages/style.css', (req, res) => {
+    res.sendFile(__dirname + '/pages/style.css');
 });
 
-//letIABLES
 let players = [];
 let games = [];
 
@@ -40,9 +33,10 @@ let createGame = {
 }
     // Si state est à 0: partie pas lancé, Si state est à 1: partie lancé, Si state est à 2: partie fini avec une demande pour rejouer,
 */
-//Setters et getters generaux
+
+
 function validNickname(nickname) {
-    if(players.indexOf(nickname) === -1) {
+    if(players.indexOf(nickname) == -1) {
         players.push(nickname);
         console.log(nickname + ' connected');
         return true;
@@ -53,6 +47,7 @@ function deletePlayer(nickname) {
     players.splice(players.indexOf(nickname), 1);
     console.log(nickname + ' disconnected');
 }
+
 function createLink(length) {
     let result = '';
     let list = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -62,7 +57,7 @@ function createLink(length) {
     }
     return result;
 }
-//Setters et getters pour une partie
+
 function getPositionOfPlayer(id, nickname) {
     return games[id].namePlayers.indexOf(nickname);
 }
@@ -73,9 +68,9 @@ function getNbPlayer(id) {
     return games[id].namePlayers.length;
 }
 function getIdWithLink(link) {
-    let result = false; 
+    let result = null;
     games.forEach(game => {
-        if((game.link == link) === undefined) return false;
+        if((game.link == link) == undefined) return null;
         if (game.link == link) result = game.id;
     });
     return result;
@@ -104,6 +99,7 @@ function getGameboard(id) {
     return games[id].gameboard;
 }
 function updateGameboard(id, location, nickname) {
+    console.log(games[id].gameboard);
     if(games[id].gameboard[location] !== -1) return false;
     else {
         games[id].gameboard[location] = getPositionOfPlayer(id, nickname);
@@ -133,6 +129,16 @@ function checkVictory(id) {
     else return false;
 }
 
+function getPublicGame() {
+    let result = null;
+
+    games.forEach((game) => {
+        if(game.state == 0 && game.private == 0 && getNbPlayer(game.id) < 2) result = game.id;
+    });
+    return result;
+}
+
+
 //CLIENT-SERVER
 io.on('connection', (socket) => {
 
@@ -145,7 +151,7 @@ io.on('connection', (socket) => {
         }
         //Si il est valide
         else {
-            socket.emit('validNickname', games);
+            socket.emit('validNickname');
         }
     });
 
@@ -153,17 +159,17 @@ io.on('connection', (socket) => {
     socket.on('deleteNickname', function(nickname){
         deletePlayer(nickname);
     });
-    //Le client veut rafraichir l'affichage des salons
-    socket.on('refresh', function(idPlayer) {
-        io.in(idPlayer).emit('refreshed', games);
+
+    socket.on('reqPublicGame', function () {
+        socket.emit('resPublicGame', getPublicGame());
     });
 
     //Le client rejoint un salon 
     socket.on('joinGame', function(idGame, nickname, idPlayer, link) {
         try {
-            if(link !== undefined) {
+            if(link != undefined) {
                 idGame = getIdWithLink(link);
-                if(idGame === false) throw new Error("Un link n'est pas bon.");
+                if(idGame == null) throw new Error("Un link n'est pas bon.");
             }
             //Si il y a déjà 2 joueurs
             if (getNbPlayer(idGame) === 2) throw new Error(games[idGame].nomPartie + " est full !");
@@ -188,6 +194,7 @@ io.on('connection', (socket) => {
             socket.emit('refreshed', games);
         }
     });
+
     //Le client créer un salon
     socket.on('createGame', function(nickname, idPlayer, privateState) {
         let idGame = games.length;
@@ -207,6 +214,7 @@ io.on('connection', (socket) => {
         console.log(nickname + ' join ' + getLink(idGame));
         socket.emit('validGame', idGame, getLink(idGame),getTypeGame(idGame));
     });
+
     //Le client se déconnecte
     socket.on('deletePlayerInRoom', function(idGame, nickname) {
         //Leave le socket
@@ -217,19 +225,19 @@ io.on('connection', (socket) => {
         deletePlayer(nickname);
         games[idGame].namePlayers.splice(games[idGame].namePlayers.indexOf(nickname), 1);
         //Si il n'y a plus personne alors on supprime le salon
-        if(getNbPlayer(idGame) === 0) games.splice(idGame, 1);
+        if(getNbPlayer(idGame) == 0) games.splice(idGame, 1);
         //Si la personne qui se déconnecte etait dans une partie en cours
-        else if(getStateGame(idGame) === 1) {
+        else if(getStateGame(idGame) == 1) {
             io.in(getLink(idGame)).emit('endGame', "forfait");
         }
-        else if(getStateGame(idGame) === 2) {
+        else if(getStateGame(idGame) == 2) {
             setStateGame(idGame, 0);
             io.in(getLink(idGame)).emit('rematch', "annulee");
         }
     });
     //Début de la partie
     socket.on('beginGame', function(idGame, nickname, idPlayer) {
-        if(getPositionOfPlayer(idGame, nickname) === games[idGame].turn) {
+        if(getPositionOfPlayer(idGame, nickname) == games[idGame].turn) {
             io.in(idPlayer).emit('yourTurn', getGameboard(idGame));
         }
         else {

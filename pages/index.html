@@ -1,58 +1,62 @@
 <!DOCTYPE html>
-<html lang="fr">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width" />
-      <title>Morpion</title>
-      <link rel="stylesheet" href="res/styles.css">
-   </head>
-   <body>
-      <h2 class="morpion-title center-container">Morpion</h2>
-     
-      <div id="menu-principal">
-         <form class="form-menu-principal center-container container">
-            <input id="input-menu-principal" type="text"placeholder="Entrer votre pseudo ici" autocomplete="off" maxlength="15" required>
-            <button class="button" type="submit">Valider</button>
-         </form>
-      </div>
-      
-      <div id="menu-partie" class="center-container container" hidden>
-         <div id="partie-container">
-            <h2>Adversaire(s) en ligne</h2>
-            <p id="erreur"></p>
-            <table class="table-parties">
-            </table>
-         </div>
-         <div>
-            <button type="button" id="btn-partie-publique" class="button">Créer une partie publique</button>
-            <button type="button" id="btn-partie-privee" class="button">Créer une partie privée</button>
-         </div>
-      </div>
-      <div id="menu-jeu" hidden>
-         <div class="grid-jeu center-container">
-            <button class="btn0 btn-jeu" id="0" value="0" disabled></button>
-            <button class="btn1 btn-jeu" id="1" value="1" disabled></button>
-            <button class="btn2 btn-jeu" id="2" value="2" disabled></button>
-            <button class="btn3 btn-jeu" id="3" value="3" disabled></button>
-            <button class="btn4 btn-jeu" id="4" value="4" disabled></button>
-            <button class="btn5 btn-jeu" id="5" value="5" disabled></button>
-            <button class="btn6 btn-jeu" id="6" value="6" disabled></button>
-            <button class="btn7 btn-jeu" id="7" value="7" disabled></button>
-            <button class="btn8 btn-jeu" id="8" value="8" disabled></button>
-         </div>
-         <p id="info-jeu"></p>
-         <input readonly type="text" value="" class="allowCopy" hidden>
-      </div>
-      
-      <div id="menu-fin" class="center-container container" hidden>
-         <p></p>
-         <div class="block-btn">
-            <button id="btn-rejouer" class="button" hidden>Rejouer</button>
-            <button id="btn-quitter" class="button" hidden>Quitter</button>
-         </div>
-      </div>
-      <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-      <script src="/script/script.js" charset="utf-8"></script>
-   </body>
+<html lang="fr" >
+    <head>
+        <meta charset="UTF-8">
+        <title>Morpion</title>
+        <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/pages/style.css">
+    </head>
+    <body class="bg-red-main">
+        <div class="flex items-stretch flex-col">
+            <h1 class="text-white font-bold text-6xl text-center mt-24 mb-16">Morpion</h1>
+            <form class="bg-white rounded-lg w-3/4 max-w-lg mx-auto p-5" id="main-menu">
+                <div class="text-center">
+                    <input type="text" name="pseudo" placeholder="Entre ton pseudo ici" id="nickname-input" class="border text-center rounded-md py-1 w-4/5" autocomplete="off" maxlength="15" required>
+                    <input type="submit" name="public" value="Jouer" class="submitbutton bg-green-main mt-5 rounded-md text-white py-0.5 w-4/5">
+                    <input type="submit" name="private" value="Créer une partie privée" class="submitbutton bg-blue-main mt-1 rounded-md text-white py-0.5 w-4/5">
+                </div>
+                <div class="flex items-stretch mt-5">
+                    <hr class="w-2/5 inline-flex ml-auto my-auto">
+                    <p class="text-2xl px-4 inline-flex pb-2 text-gray-main">ou</p>
+                    <hr class="w-2/5 inline-flex mr-auto my-auto">
+                </div>
+                <div class="text-center">
+                    <input type="text" id="input-code" placeholder="Code privée" class="border text-center rounded-md py-1 w-2/5 pr-2">
+                    <input type="submit" name="code" value="Jouer" class="submitbutton bg-gray-main mt-5 rounded-md text-white py-1 w-1/5">
+                </div>
+            </form>
+            <div class="self-center text-center" id="gameboard" hidden>
+                <div class="grid grid-flow-col grid-cols-3 grid-rows-3 gap-1">
+                    <button class="game-btn btn6 w-44 h-44" value="6" disabled></button>
+                    <button class="game-btn btn3 w-44 h-44" value="3" disabled></button>
+                    <button class="game-btn btn0 w-44 h-44" value="0" disabled></button>
+                    <button class="game-btn btn7 w-44 h-44" value="7" disabled></button>
+                    <button class="game-btn btn4 w-44 h-44" value="4" disabled></button>
+                    <button class="game-btn btn1 w-44 h-44" value="1" disabled></button>
+                    <button class="game-btn btn8 w-44 h-44" value="8" disabled></button>
+                    <button class="game-btn btn5 w-44 h-44" value="5" disabled></button>
+                    <button class="game-btn btn2 w-44 h-44" value="2" disabled></button>
+                </div>
+                <p class="text-center text-white mt-5 text-xl" id="game-info"></p>
+                <input readonly type="text" value="" class="allowCopy w-2/3 text-center" hidden>
+            </div>
+            <div class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-90" id="popup-container" hidden>
+                <div class="mt-32 py-10 bg-white mx-auto w-1/3 rounded-xl">
+                    <p class="text-center pt-4 text-2xl" id="popup-text">zaeaze</p>
+                    <div class="block-btn text-center mt-16">
+                        <button class="bg-blue-main text-white mx-2 rounded-md text-white py-0.5 w-1/3" id="rematch-button">Revanche</button>
+                        <button class="bg-red-main text-white mx-2 rounded-md text-white py-0.5 w-1/3" id="leave-button">Quitter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <noscript>JavaScript is not supported by your browser.</noscript>
+        <script
+                src="https://code.jquery.com/jquery-3.6.0.min.js"
+                integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+                crossorigin="anonymous">
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script src="/script/script.js"></script>
+    </body>
 </html>
