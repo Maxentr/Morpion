@@ -192,7 +192,7 @@ $(function() {
         let temp_element = [];
         //Tri des parties privées et des parties en cours
         games.forEach(Element => {
-            if(Element.state == 0 || Element.private != 1) {
+            if(Element.state == 0 && Element.private == 0) {
                 temp_element.push(Element);
             }
         });
