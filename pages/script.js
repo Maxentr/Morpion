@@ -1,5 +1,6 @@
 $(function() {
-    let socket = io.connect(window.location.hostname);
+    var origin = window.location.origin;
+    var socket = io.connect(origin);
     let nickname;
     let idGame;
     let idPlayer;
