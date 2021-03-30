@@ -1,5 +1,5 @@
 $(function() {
-    const socket = io();
+    let socket = io.connect(window.location.hostname);
     let nickname;
     let idGame;
     let idPlayer;
