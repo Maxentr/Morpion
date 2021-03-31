@@ -160,6 +160,7 @@ $(function() {
     socket.on('endGame', function(result) {
         let btnRes = $('#rematch-button');
         let endText = $('#popup-text');
+        btnRes.text("Revanche");
         btnRes.attr('hidden', false);
         btnRes.attr('disabled', false);
         
