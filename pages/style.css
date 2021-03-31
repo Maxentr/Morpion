@@ -10,3 +10,7 @@
 .bg-blue-main { background-color: var(--main-blue); }
 .bg-gray-main { background-color: var(--main-gray); }
 .text-gray-main { color: var(--main-gray); }
+
+.game-btn {
+  background-color: var(--main-white);
+}
