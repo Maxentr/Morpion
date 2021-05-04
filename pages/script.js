@@ -216,7 +216,7 @@ $(function() {
         for(let i = 0; i < gameboard.length; i++) {
             let temp_btn = ".btn" + i;
             if (gameboard[i] == 0)  $(temp_btn).css('background-color', "var(--main-blue)");
-            else if (gameboard[i] == 1) $(temp_btn).css('background-color', "var(--main-gray)");
+            else if (gameboard[i] == 1) $(temp_btn).css('background-color', "var(--main-dark-blue)");
             else $(temp_btn).css('background-color', "var(--main-white)");
         }
     }
