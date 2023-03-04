@@ -1,17 +1,5 @@
 import * as React from "react"
 
-interface Props
-  extends React.DetailedHTMLProps<
-    React.ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > {
-  label: string
-  variant: "filled" | "outlined"
-  color: "primary" | "secondary" | "tertiary" | "highlight" | "customBlack"
-  size: "small" | "normal" | "large"
-  loading: boolean
-}
-
 const getVariantStyle = {
   filled: "border",
   outlined: "border bg-transparent",
@@ -44,12 +32,26 @@ const getSizeStyle = {
   large: "px-6 py-4 rounded-xl text-lg",
 }
 
+interface Props
+  extends React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
+  label: string
+  variant?: "filled" | "outlined"
+  color?: "primary" | "secondary" | "tertiary" | "highlight" | "customBlack"
+  size?: "small" | "normal" | "large"
+  loading?: boolean
+  className?: string
+}
+
 const Button = ({
   label,
   variant = "filled",
   color = "highlight",
   size = "normal",
   loading = false,
+  className,
   ...props
 }: Props) => {
   return (
@@ -58,7 +60,7 @@ const Button = ({
         getColorStyle[color]
       } ${getSizeStyle[size]} ${getTextColorStyle[variant + color]} ${
         loading && `cursor-wait`
-      }`}
+      } ${className}`}
       {...props}
     >
       {loading && (

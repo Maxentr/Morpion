@@ -1,5 +1,11 @@
 import React from "react"
 
+const getSizeStyle = {
+  small: "px-2 py-1 rounded text-sm",
+  normal: "px-4 py-2 rounded-lg text-base",
+  large: "px-6 py-4 rounded-xl text-lg",
+}
+
 interface Props
   extends Omit<
     React.DetailedHTMLProps<
@@ -10,20 +16,21 @@ interface Props
   > {
   label?: string
   error?: string
-  size: "small" | "normal" | "large"
+  size?: "small" | "normal" | "large"
+  className?: string
+  containerClassName?: string
 }
 
-const getSizeStyle = {
-  small: "px-2 py-1 rounded text-sm",
-  normal: "px-4 py-2 rounded-lg text-base",
-  large: "px-6 py-4 rounded-xl text-lg",
-}
-
-// TODO get sizes
-
-const Input = ({ label, error, size = "normal", ...props }: Props) => {
+const Input = ({
+  label,
+  error,
+  size = "normal",
+  className,
+  containerClassName,
+  ...props
+}: Props) => {
   return (
-    <div className="flex flex-col gap-1">
+    <div className={`flex flex-col gap-1 ${containerClassName}`}>
       {label && (
         <label
           htmlFor="name"
@@ -36,7 +43,7 @@ const Input = ({ label, error, size = "normal", ...props }: Props) => {
         <input
           className={`border ${
             error ? "border-red-500" : "border-customBlack"
-          } ${getSizeStyle[size]}}`}
+          } ${getSizeStyle[size]}} ${className}`}
           {...props}
         />
         <span className="text-red-500">{error}</span>
