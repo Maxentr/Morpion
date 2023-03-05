@@ -27,6 +27,7 @@
     "postcss": "^8.4.21",
     "tailwind-config": "workspace:*",
     "tsconfig": "workspace:*",
+    "shared-types": "workspace:*",
     "typescript": "^4.5.3"
   }
 }

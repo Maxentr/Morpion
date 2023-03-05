@@ -1,18 +1,6 @@
 import Image from "next/image"
 import React from "react"
-
-export type Avatar =
-  | "bee"
-  | "crab"
-  | "dog"
-  | "elephant"
-  | "fox"
-  | "frog"
-  | "koala"
-  | "octopus"
-  | "penguin"
-  | "turtle"
-  | "whale"
+import { Avatar } from "shared-types"
 
 type Props = {
   avatar: Avatar
