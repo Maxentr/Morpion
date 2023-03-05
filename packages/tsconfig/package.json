@@ -6,6 +6,6 @@
     "base.json",
     "nextjs.json",
     "react-library.json",
-    "nest.json"
+    "api.json"
   ]
 }
