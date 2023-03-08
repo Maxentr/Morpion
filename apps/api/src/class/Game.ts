@@ -71,6 +71,10 @@ export class Game<T extends Player = Player> {
     this._turn = turn
   }
 
+  checkTurn(playerSocketID: string): boolean {
+    return this._players[this._turn].socketID === playerSocketID
+  }
+
   isFull(): boolean {
     return this._players.length === this.maxPlayers
   }
