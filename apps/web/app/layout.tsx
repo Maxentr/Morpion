@@ -1,4 +1,6 @@
 import React, { PropsWithChildren } from "react"
+import SocketContextProvider from "../contexts/SocketContext"
+import UserContextProvider from "../contexts/UserContext"
 import "../styles/globals.css"
 
 const layout = ({ children }: PropsWithChildren) => {
@@ -7,7 +9,9 @@ const layout = ({ children }: PropsWithChildren) => {
       <head></head>
       <body>
         <div className="absolute inset-0 bg-tertiary flex flex-col">
-          {children}
+          <SocketContextProvider>
+            <UserContextProvider>{children}</UserContextProvider>
+          </SocketContextProvider>
         </div>
       </body>
     </html>

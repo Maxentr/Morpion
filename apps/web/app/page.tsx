@@ -3,56 +3,92 @@
 import { Button, Input } from "ui"
 import { Shantell_Sans } from "next/font/google"
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useSocket } from "../contexts/SocketContext"
+import SelectAvatar from "../components/SelectAvatar"
+import { useUser } from "../contexts/UserContext"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
 const Index = () => {
+  const { name, avatar, setName, setAvatar, saveUserInLocalStorage } = useUser()
+  const { socket, connect } = useSocket()
+  const params = useSearchParams()
   const router = useRouter()
 
-  const [pseudo, setPseudo] = useState("")
+  const gameId = params.get("gameId")
+
+  const [linkWithGame, setLinkWithGame] = useState(false)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const pseudo = window.localStorage.getItem("pseudo")
-    setPseudo(pseudo || "")
-  }, [])
+    // const game = params.get("game")
 
-  const handleButtons = (type: "join" | "private") => {
-    if (!pseudo) return
+    if (gameId) setLinkWithGame(true)
+  }, [params])
 
+  const handleButtons = (type: "join" | "find" | "createPrivate") => {
+    if (!name) return
     setLoading(true)
-    window.localStorage.setItem("pseudo", pseudo)
-    router.push(`/tic-tac-toe/play?gameId=${"123"}`)
-    setLoading(false)
+    saveUserInLocalStorage()
+
+    const socket = connect("tic-tac-toe")
+
+    if (type === "join")
+      socket.emit("join", { gameId, player: { name, avatar } })
+    else socket.emit(type, { name, avatar })
+
+    socket.on("joinGame", (game) => {
+      console.table(game)
+      setLoading(false)
+      router.push(`/tic-tac-toe/${game._id}`)
+    })
   }
 
   return (
     <>
       <div className="flex flex-1 items-center justify-center">
         <div className="bg-primary border border-customBlack px-16 py-12 rounded-xl w-3/6 max-w-2xl flex flex-col items-center">
-          <h1 className={"text-3xl text-center " + shantell.className}>
+          <h1 className={"text-3xl text-center mb-2 " + shantell.className}>
             Tic Tac Toe
           </h1>
+          <SelectAvatar
+            containerClassName="mb-2"
+            onChange={setAvatar}
+          />
           <Input
-            label="Pseudo"
+            label="Nom"
             containerClassName="w-full"
-            value={pseudo}
-            onChange={(e) => setPseudo(e.target.value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
-          <Button
-            onClick={() => handleButtons("join")}
-            label="Trouver une partie"
-            color="secondary"
-            className="mt-6 w-full"
-            loading={loading}
-          />
-          <Button
-            onClick={() => handleButtons("private")}
-            label="Créer une partie privée"
-            className="mt-2 w-full"
-            loading={loading}
-          />
+          <div className="flex flex-col gap-2 mt-6">
+            {linkWithGame ? (
+              <Button
+                onClick={() => handleButtons("join")}
+                label="Rejoindre la partie"
+                color="secondary"
+                className="w-full"
+                loading={loading}
+              />
+            ) : (
+              <>
+                <Button
+                  onClick={() => handleButtons("find")}
+                  label="Trouver une partie"
+                  color="secondary"
+                  className="w-full"
+                  loading={loading}
+                />
+                <Button
+                  onClick={() => handleButtons("createPrivate")}
+                  label="Créer une partie privée"
+                  className="w-full"
+                  loading={loading}
+                />
+              </>
+            )}
+          </div>
         </div>
       </div>
     </>
