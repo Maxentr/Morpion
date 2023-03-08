@@ -14,6 +14,7 @@
     "next": "^13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "socket.io-client": "^4.6.1",
     "tailwindcss": "^3.2.7",
     "ui": "workspace:*"
   },
@@ -25,9 +26,9 @@
     "eslint": "7.32.0",
     "eslint-config-custom": "workspace:*",
     "postcss": "^8.4.21",
+    "shared-types": "workspace:*",
     "tailwind-config": "workspace:*",
     "tsconfig": "workspace:*",
-    "shared-types": "workspace:*",
     "typescript": "^4.5.3"
   }
 }
