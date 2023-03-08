@@ -19,7 +19,7 @@ server.ready((err) => {
   })
 })
 
-server.listen({ port: 3000 }, (err, address) => {
+server.listen({ port: 3001 }, (err, address) => {
   if (err) {
     console.error(err)
     process.exit(1)

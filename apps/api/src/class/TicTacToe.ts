@@ -43,7 +43,7 @@ export class TicTacToe extends Game {
     this.turn = this.turn === 0 ? 1 : 0
   }
 
-  checkWin(): Player | undefined {
+  checkWin(): Player | "draw" | undefined {
     const board = this.board
     const player = this.players[this.turn]
     const symbol = this.turn === 0 ? "X" : "O"
@@ -81,6 +81,11 @@ export class TicTacToe extends Game {
       board[2][0] === symbol
     ) {
       return player
+    }
+
+    // check draw
+    if (board.every((row) => row.every((cell) => cell !== ""))) {
+      return "draw"
     }
 
     return undefined

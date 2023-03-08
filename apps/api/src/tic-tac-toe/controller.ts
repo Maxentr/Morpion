@@ -20,7 +20,7 @@ export default class TicTacToeController extends GameController<TicTacToe> {
   }
 
   async create(socket: Socket, player: CreatePlayer) {
-    const game = new TicTacToe()
+    const game = new TicTacToe(true)
     this.games.push(game)
 
     const newPlayer = new Player(player.name, socket.id, player.avatar)
@@ -28,54 +28,58 @@ export default class TicTacToeController extends GameController<TicTacToe> {
     game.addPlayer(newPlayer)
     await socket.join(game.id)
 
-    // Send the game to the player who created it
+    console.log(`Game created : ${game.id}`)
 
-    socket.emit("game", game)
+    socket.emit("joinGame", game)
   }
 
-  async join(socket: Socket, gameID: string, player: CreatePlayer) {
-    const game = this.getGame(gameID)
+  async join(socket: Socket, gameId: string, player: CreatePlayer) {
+    const game = this.getGame(gameId)
     if (!game || game.isFull()) return
 
     const newPlayer = new Player(player.name, socket.id, player.avatar)
     game.addPlayer(newPlayer)
-    await socket.join(gameID)
+    await socket.join(gameId)
 
     if (game.status === "lobby" && game.isFull()) game.status = "playing"
 
-    socket.emit("game", game)
+    socket.emit("joinGame", game)
 
-    socket.to(gameID).emit("game", game)
+    socket.to(gameId).emit("game", game)
   }
 
-  async play(socket: Socket, gameID: string, x: number, y: number) {
-    const game = this.getGame(gameID)
+  async play(socket: Socket, gameId: string, x: number, y: number) {
+    const game = this.getGame(gameId)
     if (!game) return
+    if (!game.checkTurn(socket.id)) return
 
     game.play(socket.id, x, y)
     const winner = game.checkWin()
 
-    if (winner) {
+    if (winner === "draw") {
+      socket.emit("draw", game)
+      socket.to(gameId).emit("draw", game)
+    } else if (winner) {
       game.status = "finished"
       game.getPlayer(winner.socketID)?.addPoint()
 
       socket.emit("winner", winner, game)
-      socket.to(gameID).emit("winner", winner, game)
+      socket.to(gameId).emit("winner", winner, game)
     } else {
       game.changeTurn()
-      
+
       socket.emit("game", game)
-      socket.to(gameID).emit("game", game)
+      socket.to(gameId).emit("game", game)
     }
   }
 
-  async leave(socket: Socket, gameID: string) {
-    const game = this.getGame(gameID)
+  async leave(socket: Socket, gameId: string) {
+    const game = this.getGame(gameId)
     if (!game) return
 
     game.removePlayer(socket.id)
-    socket.leave(gameID)
+    socket.leave(gameId)
 
-    if (game.players.length === 0) this.removeGame(gameID)
+    if (game.players.length === 0) this.removeGame(gameId)
   }
 }

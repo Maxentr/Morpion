@@ -10,7 +10,7 @@ const instance = ticTacToeController.getInstance()
 const gamesRouter = (
   socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
 ) => {
-  socket.on("create", (player: CreatePlayer) => {
+  socket.on("createPrivate", (player: CreatePlayer) => {
     try {
       // Check if the player is valid
       createPlayer.parse(player)
@@ -37,20 +37,29 @@ const gamesRouter = (
   socket.on("join", (data: JoinGame) => {
     try {
       // Check if the player is valid
-      const { gameID, player } = joinGame.parse(data)
+      const { gameId, player } = joinGame.parse(data)
 
-      instance.join(socket, gameID, player)
+      instance.join(socket, gameId, player)
     } catch (error) {
       console.error(`Error while joining a game : ${error}`)
+    }
+  })
+
+  socket.on("get", (gameId: string) => {
+    try {
+      const game = instance.getGame(gameId)
+      if (game) socket.emit("game", game)
+    } catch (error) {
+      console.error(`Error while getting a game : ${error}`)
     }
   })
 
   socket.on("play", (data: PlayTicTacToe) => {
     try {
       // Check if the player is valid
-      const { gameID, x, y } = playTicTacToe.parse(data)
+      const { gameId, x, y } = playTicTacToe.parse(data)
 
-      instance.play(socket, gameID, x, y)
+      instance.play(socket, gameId, x, y)
     } catch (error) {
       console.error(`Error while playing a game : ${error}`)
     }

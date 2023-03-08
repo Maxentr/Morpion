@@ -2,7 +2,7 @@ import { z } from "zod"
 import createPlayer from "./createPlayer"
 
 const joinGame = z.object({
-  gameID: z.string(),
+  gameId: z.string(),
   player: createPlayer,
 })
 

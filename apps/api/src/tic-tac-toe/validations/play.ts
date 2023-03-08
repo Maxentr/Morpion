@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 const playTicTacToe = z.object({
-  gameID: z.string(),
+  gameId: z.string(),
   x: z.number().int().min(0).max(2),
   y: z.number().int().min(0).max(2),
 })
