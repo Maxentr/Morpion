@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useSocket } from "../contexts/SocketContext"
 import SelectAvatar from "../components/SelectAvatar"
 import { useUser } from "../contexts/UserContext"
+import { Player, TicTacToe } from "shared-utils"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
@@ -34,14 +35,17 @@ const Index = () => {
 
     const socket = connect("tic-tac-toe")
 
-    if (type === "join")
-      socket.emit("join", { gameId, player: { name, avatar } })
+    const player: Pick<Player, "name" | "avatar"> = {
+      name,
+      avatar,
+    }
+    if (gameId && type === "join") socket.emit("join", { gameId, player })
     else socket.emit(type, { name, avatar })
 
-    socket.on("joinGame", (game) => {
-      console.table(game)
+    socket.on("joinGame", (game: TicTacToe) => {
+      console.table(game.id)
       setLoading(false)
-      router.push(`/tic-tac-toe/${game._id}`)
+      router.push(`/tic-tac-toe/${game.id}`)
     })
   }
 
@@ -52,10 +56,7 @@ const Index = () => {
           <h1 className={"text-3xl text-center mb-2 " + shantell.className}>
             Tic Tac Toe
           </h1>
-          <SelectAvatar
-            containerClassName="mb-2"
-            onChange={setAvatar}
-          />
+          <SelectAvatar containerClassName="mb-2" onChange={setAvatar} />
           <Input
             label="Nom"
             containerClassName="w-full"
