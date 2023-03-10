@@ -1,9 +1,10 @@
 import { Socket } from "socket.io"
 import { DefaultEventsMap } from "socket.io/dist/typed-events"
 import ticTacToeController from "./controller"
-import createPlayer, { CreatePlayer } from "../common/validations/createPlayer"
-import playTicTacToe, { PlayTicTacToe } from "./validations/play"
-import joinGame, { JoinGame } from "../common/validations/joinGame"
+import createPlayer, {
+  CreatePlayer,
+} from "shared-utils/src/validations/createPlayer"
+import { joinGame, JoinGame, playTicTacToe, PlayTicTacToe } from "shared-utils"
 
 const instance = ticTacToeController.getInstance()
 
@@ -27,19 +28,19 @@ const gamesRouter = (
       createPlayer.parse(player)
 
       const game = instance.getGameNotFull()
-      if (game) instance.join(socket, game.id, player)
-      else instance.create(socket, player)
+      if (game) instance.onJoin(socket, game.id, player)
+      else instance.create(socket, player, false)
     } catch (error) {
-      console.error(`Error while creating a game : ${error}`)
+      console.error(`Error while finding a game : ${error}`)
     }
   })
 
   socket.on("join", (data: JoinGame) => {
     try {
-      // Check if the player is valid
+      // Check if the data is valid
       const { gameId, player } = joinGame.parse(data)
 
-      instance.join(socket, gameId, player)
+      instance.onJoin(socket, gameId, player)
     } catch (error) {
       console.error(`Error while joining a game : ${error}`)
     }
@@ -47,8 +48,7 @@ const gamesRouter = (
 
   socket.on("get", (gameId: string) => {
     try {
-      const game = instance.getGame(gameId)
-      if (game) socket.emit("game", game)
+      instance.onGet(socket, gameId)
     } catch (error) {
       console.error(`Error while getting a game : ${error}`)
     }
@@ -62,6 +62,22 @@ const gamesRouter = (
       instance.play(socket, gameId, x, y)
     } catch (error) {
       console.error(`Error while playing a game : ${error}`)
+    }
+  })
+
+  socket.on("replay", (gameId: string) => {
+    try {
+      instance.onReplay(socket, gameId)
+    } catch (error) {
+      console.error(`Error while replaying a game : ${error}`)
+    }
+  })
+
+  socket.on("leave", (gameId: string) => {
+    try {
+      instance.onLeave(socket, gameId)
+    } catch (error) {
+      console.error(`Error while leaving a game : ${error}`)
     }
   })
 }
