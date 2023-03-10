@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from "react"
-import type { Avatar } from "shared-types"
+import type { Avatar } from "shared-utils"
 import { useUser } from "../contexts/UserContext"
 import UserAvatar from "./UserAvatar"
 
@@ -26,10 +26,18 @@ type Props = {
 const SelectAvatar = ({ containerClassName, onChange }: Props) => {
   const { avatar } = useUser()
 
-  const [index, setIndex] = useState(
-    availableAvatars.findIndex((a) => a === avatar) ||
-      Math.round(Math.random() * availableAvatars.length - 1),
-  )
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    const userAvatar = availableAvatars.findIndex((a) => a === avatar)
+    const newIndex =
+      userAvatar !== -1
+        ? userAvatar
+        : Math.round(Math.random() * availableAvatars.length - 1)
+
+    setIndex(newIndex)
+    onChange(availableAvatars[newIndex])
+  }, [])
 
   const handlePrevious = () => {
     const newIndex = index === 0 ? availableAvatars.length - 1 : index - 1
