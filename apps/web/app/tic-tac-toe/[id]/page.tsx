@@ -1,13 +1,14 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
 import { Shantell_Sans } from "next/font/google"
 import Circle from "../../../components/Circle"
 import { XMarkIcon } from "@heroicons/react/24/outline"
 import UserAvatar from "../../../components/UserAvatar"
 import { useSocket } from "../../../contexts/SocketContext"
 import { useUser } from "../../../contexts/UserContext"
+import { Button } from "ui"
+import { GAME_STATUS, Player, TicTacToe } from "shared-utils"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
@@ -16,6 +17,7 @@ type Props = { params: { id: string } }
 const Page = ({ params }: Props) => {
   const { socket } = useSocket()
   const { name } = useUser()
+
   const [board, setBoard] = useState<string[][]>([
     ["", "", ""],
     ["", "", ""],
@@ -23,64 +25,82 @@ const Page = ({ params }: Props) => {
   ])
   const [turn, setTurn] = useState(false)
   const [players, setPlayers] = useState<any[]>([])
+  const [gameState, setGameState] = useState<GAME_STATUS>("lobby")
 
   const [information, setInformation] = useState("")
 
+  const gameURL = `http://localhost:3000/?gameId=${params.id}`
+
   useEffect(() => {
-    socketListenersInit()
+    gameListenersInit()
     getGame()
+
+    return () => {
+      gameListenersDestroy()
+    }
   }, [socket])
+
+  const gameListenersInit = async () => {
+    socket?.on("game", onGameUpdate)
+    socket?.on("winner", onGameEnd)
+    socket?.on("draw", onGameDraw)
+    socket?.on("replay", onReplay)
+  }
+
+  const gameListenersDestroy = async () => {
+    socket?.off("game", onGameUpdate)
+    socket?.off("winner", onGameEnd)
+    socket?.off("draw", onGameDraw)
+    socket?.off("replay", onReplay)
+  }
+
+  const onReplay = () => {
+    setInformation("Votre adversaire veut rejouer !")
+  }
 
   const getGame = async () => {
     socket?.emit("get", params.id)
   }
 
-  const socketListenersInit = async () => {
-    socket?.on("game", onGameUpdate)
-    socket?.on("winner", onGameEnd)
-    socket?.on("draw", onGameDraw)
+  const updateGame = async (game: TicTacToe) => {
+    setBoard(game.board)
+    setTurn(game.players[game.turn].name === name)
+    setPlayers(game.players)
+    setGameState(game.status)
   }
 
-  const socketListenersDestroy = async () => {
-    socket?.off("game", onGameUpdate)
-    socket?.off("winner", onGameEnd)
-    socket?.off("draw", onGameDraw)
-  }
-
-  const updateGame = async (game: any) => {
-    setBoard(game._board)
-    setTurn(game._players[game._turn]._name === name)
-    setPlayers(game._players)
-  }
-
-  const onGameUpdate = async (game: any) => {
+  const onGameUpdate = async (game: TicTacToe) => {
     updateGame(game)
 
-    if (game._status === "lobby") {
-      setInformation("En attente d'un adversaire")
-    } else if (game._status === "playing") {
+    if (game.status === "lobby") {
       setInformation(
-        `Au tour de ${game._players[game._turn]._name} (${
-          game._players[game._turn]._avatar
+        game.private
+          ? "Partagez ce lien avec un ami pour commencer une partie :"
+          : "En attente d'un adversaire",
+      )
+    } else if (game.status === "playing") {
+      setInformation(
+        `Au tour de ${game.players[game.turn].name} (${
+          game.players[game.turn].avatar
         })`,
       )
     }
   }
 
-  const onGameEnd = async (winner: any, game: any) => {
+  const onGameEnd = async (game: TicTacToe, winner: Player) => {
     updateGame(game)
 
-    setInformation(`${winner._name} (${winner._avatar}) a gagné !`)
-
-    socketListenersDestroy()
+    setInformation(`${winner.name} (${winner.avatar}) a gagné !`)
   }
 
-  const onGameDraw = async (game: any) => {
+  const onGameDraw = async (game: TicTacToe) => {
     updateGame(game)
 
     setInformation("Match nul !")
+  }
 
-    socketListenersDestroy()
+  const handleReplay = async () => {
+    socket?.emit("replay", params.id)
   }
 
   const handleSelection = (x: number, y: number) => {
@@ -91,6 +111,16 @@ const Page = ({ params }: Props) => {
       x,
       y,
     })
+  }
+
+  const handleClipboard = (e: any) => {
+    navigator.clipboard.writeText(gameURL)
+    e.target.blur()
+    e.target.value = "Copié !"
+
+    setTimeout(() => {
+      e.target.value = gameURL
+    }, 2000)
   }
 
   return (
@@ -104,8 +134,9 @@ const Page = ({ params }: Props) => {
       </h1>
       <div className="flex-1 w-full flex flex-row justify-evenly items-center">
         <UserAvatar
-          avatar={players?.[0]?._avatar}
-          pseudo={players?.[0]?._name}
+          avatar={players?.[0]?.avatar}
+          pseudo={players?.[0]?.name}
+          score={players?.[0]?.score}
         />
         <div className="flex flex-col gap-2">
           <div className="grid grid-cols-3 gap-0.5 bg-gray-200 rounded-xl overflow-hidden shadow">
@@ -131,10 +162,24 @@ const Page = ({ params }: Props) => {
             )}
           </div>
           <p className="text-center">{information}</p>
+          {gameState === "lobby" && (
+            <div>
+              <input
+                type="text"
+                className="text-center w-full border outline-none rounded"
+                onClick={handleClipboard}
+                value={gameURL}
+              />
+            </div>
+          )}
+          {gameState === "finished" && (
+            <Button onClick={handleReplay} label="Rejouer" />
+          )}
         </div>
         <UserAvatar
-          avatar={players?.[1]?._avatar || "octopus"}
-          pseudo={players?.[1]?._name || "..."}
+          avatar={players?.[1]?.avatar || "octopus"}
+          pseudo={players?.[1]?.name || "..."}
+          score={players?.[1]?.score}
         />
       </div>
     </div>
