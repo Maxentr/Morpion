@@ -1,13 +1,12 @@
-import { Avatar } from "shared-types"
 import { Game } from "./Game"
 import { Player } from "./Player"
 
 export class TicTacToe extends Game {
-  private _board: string[][]
+  board: string[][]
 
   constructor(privateGame: boolean = false) {
     super(2, privateGame)
-    this._board = [
+    this.board = [
       ["", "", ""],
       ["", "", ""],
       ["", "", ""],
@@ -22,12 +21,8 @@ export class TicTacToe extends Game {
     this.players.push(player)
   }
 
-  get board(): string[][] {
-    return this._board
-  }
-
   isAvailable(x: number, y: number): boolean {
-    return this._board[x][y] === ""
+    return this.board[x][y] === ""
   }
 
   play(playerSocketID: string, x: number, y: number): void {
@@ -36,11 +31,7 @@ export class TicTacToe extends Game {
     if (!player || this.status !== "playing") return
     if (this.players[this.turn].socketID !== player.socketID) return
 
-    if (this.isAvailable(x, y)) this._board[x][y] = this.turn === 0 ? "X" : "O"
-  }
-
-  changeTurn(): void {
-    this.turn = this.turn === 0 ? 1 : 0
+    if (this.isAvailable(x, y)) this.board[x][y] = this.turn === 0 ? "X" : "O"
   }
 
   checkWin(): Player | "draw" | undefined {
@@ -89,5 +80,14 @@ export class TicTacToe extends Game {
     }
 
     return undefined
+  }
+
+  override reset(): void {
+    super.reset()
+    this.board = [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ]
   }
 }

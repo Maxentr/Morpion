@@ -1,7 +1,0 @@
-{
-  "name": "shared-types",
-  "version": "0.0.0",
-  "description": "Shared types for the project",
-  "main": "index.ts",
-  "private": true
-}

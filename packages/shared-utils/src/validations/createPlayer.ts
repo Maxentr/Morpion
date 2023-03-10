@@ -1,5 +1,5 @@
-import { Avatar } from "shared-types"
 import { z } from "zod"
+import { Avatar } from "../../types/avatar"
 
 const avatar: z.ZodType<Avatar> = z.enum([
   "bee",
