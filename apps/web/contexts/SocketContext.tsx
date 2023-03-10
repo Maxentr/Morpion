@@ -2,16 +2,26 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react"
 import { io, Socket } from "socket.io-client"
+import {
+  ClientToServerTicTacToeEvents,
+  ServerToClientEvents,
+  TicTacToe,
+} from "shared-utils"
+
+type CustomSocket = Socket<
+  ServerToClientEvents<TicTacToe>,
+  ClientToServerTicTacToeEvents
+>
 
 type SocketContextInterface = {
-  socket: Socket | null
-  connect: (namespace?: string) => Socket
+  socket: CustomSocket | null
+  connect: (namespace?: string) => CustomSocket
 }
 
 const SocketContext = createContext({} as SocketContextInterface)
 
 const SocketContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [socket, setSocket] = useState<Socket | null>(null)
+  const [socket, setSocket] = useState<CustomSocket | null>(null)
 
   useEffect(() => {
     return () => {
@@ -27,7 +37,7 @@ const SocketContextProvider = ({ children }: { children: React.ReactNode }) => {
     })
 
     setSocket(newSocket)
-    return newSocket
+    return newSocket as CustomSocket
   }
 
   return (
