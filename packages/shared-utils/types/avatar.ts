@@ -1,0 +1,12 @@
+export type Avatar =
+  | "bee"
+  | "crab"
+  | "dog"
+  | "elephant"
+  | "fox"
+  | "frog"
+  | "koala"
+  | "octopus"
+  | "penguin"
+  | "turtle"
+  | "whale"
