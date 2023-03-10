@@ -36,7 +36,7 @@ importers:
       fastify: ^4.14.0
       fastify-socket.io: ^4.0.0
       nodemon: ^2.0.21
-      shared-types: workspace:*
+      shared-utils: workspace:*
       socket.io: ^4.6.1
       tsconfig: workspace:*
       typescript: ^4.9.5
@@ -50,7 +50,7 @@ importers:
       '@types/node': 17.0.45
       eslint-config-custom: link:../../packages/eslint-config-custom
       nodemon: 2.0.21
-      shared-types: link:../../packages/shared-types
+      shared-utils: link:../../packages/shared-utils
       tsconfig: link:../../packages/tsconfig
       typescript: 4.9.5
 
@@ -127,7 +127,7 @@ importers:
       postcss: ^8.4.21
       react: 18.2.0
       react-dom: 18.2.0
-      shared-types: workspace:*
+      shared-utils: workspace:*
       socket.io-client: ^4.6.1
       tailwind-config: workspace:*
       tailwindcss: ^3.2.7
@@ -151,7 +151,7 @@ importers:
       eslint: 7.32.0
       eslint-config-custom: link:../../packages/eslint-config-custom
       postcss: 8.4.21
-      shared-types: link:../../packages/shared-types
+      shared-utils: link:../../packages/shared-utils
       tailwind-config: link:../../packages/tailwind-config
       tsconfig: link:../../packages/tsconfig
       typescript: 4.9.5
@@ -172,6 +172,18 @@ importers:
       eslint-plugin-react: 7.31.8_eslint@7.32.0
     devDependencies:
       typescript: 4.9.5
+
+  packages/shared-types:
+    specifiers:
+      shared-utils: workspace:*
+    devDependencies:
+      shared-utils: link:../shared-utils
+
+  packages/shared-utils:
+    specifiers:
+      zod: ^3.21.0
+    dependencies:
+      zod: 3.21.0
 
   packages/tailwind-config:
     specifiers:
