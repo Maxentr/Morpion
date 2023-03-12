@@ -15,12 +15,6 @@ export class TicTacToe extends Game {
     return this
   }
 
-  override addPlayer(player: Player): void {
-    if (this.isFull()) return
-
-    this.players.push(player)
-  }
-
   isAvailable(x: number, y: number): boolean {
     return this.board[x][y] === ""
   }
