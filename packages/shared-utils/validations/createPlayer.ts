@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { Avatar } from "../../types/avatar"
+import { Avatar } from "../types/avatar"
 
 const avatar: z.ZodType<Avatar> = z.enum([
   "bee",
@@ -15,11 +15,9 @@ const avatar: z.ZodType<Avatar> = z.enum([
   "whale",
 ])
 
-const createPlayer = z.object({
+export const createPlayer = z.object({
   name: z.string().min(1).max(100),
   avatar: avatar,
 })
 
 export type CreatePlayer = z.infer<typeof createPlayer>
-
-export default createPlayer

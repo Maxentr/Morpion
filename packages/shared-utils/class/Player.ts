@@ -1,4 +1,4 @@
-import { Avatar } from "../../types/avatar"
+import { Avatar } from "../types/avatar"
 
 export class Player {
   name: string
