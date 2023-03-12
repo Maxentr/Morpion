@@ -1,6 +1,5 @@
 import { Socket } from "socket.io"
-import { DefaultEventsMap } from "socket.io/dist/typed-events"
-import ticTacToeController from "./controller"
+import ticTacToeController, { TicTacToeSocket } from "./controller"
 import createPlayer, {
   CreatePlayer,
 } from "shared-utils/src/validations/createPlayer"
@@ -8,9 +7,7 @@ import { joinGame, JoinGame, playTicTacToe, PlayTicTacToe } from "shared-utils"
 
 const instance = ticTacToeController.getInstance()
 
-const gamesRouter = (
-  socket: Socket<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>,
-) => {
+const gamesRouter = (socket: TicTacToeSocket) => {
   socket.on("createPrivate", (player: CreatePlayer) => {
     try {
       // Check if the player is valid

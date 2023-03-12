@@ -1,9 +1,21 @@
 import { Socket } from "socket.io"
 import { GameController } from "../class/GameController"
-import { Player, TicTacToe } from "shared-utils"
+import {
+  ClientTicTacToeEvents,
+  Player,
+  ServerEvents,
+  TicTacToe,
+} from "shared-utils"
 import { CreatePlayer } from "shared-utils/src/validations/createPlayer"
 
-export default class TicTacToeController extends GameController<TicTacToe> {
+export type TicTacToeSocket = Socket<
+  ClientTicTacToeEvents,
+  ServerEvents<TicTacToe>
+>
+export default class TicTacToeController extends GameController<
+  TicTacToe,
+  TicTacToeSocket
+> {
   private static instance: TicTacToeController
 
   private constructor() {
