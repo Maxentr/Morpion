@@ -13,7 +13,8 @@ const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
 const Index = () => {
   const { name, avatar, setName, setAvatar, saveUserInLocalStorage } = useUser()
-  const { socket, connect } = useSocket()
+  const { connect } = useSocket()
+
   const params = useSearchParams()
   const router = useRouter()
 
@@ -33,7 +34,7 @@ const Index = () => {
     setLoading(true)
     saveUserInLocalStorage()
 
-    const socket = connect("tic-tac-toe")
+    const socket = connect()
 
     const player: Pick<Player, "name" | "avatar"> = {
       name,

@@ -15,7 +15,8 @@ const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 type Props = { params: { id: string } }
 
 const Page = ({ params }: Props) => {
-  const { socket } = useSocket()
+  const { socket } = useSocket("tic-tac-toe")
+
   const { name } = useUser()
 
   const [board, setBoard] = useState<string[][]>([
