@@ -1,22 +1,10 @@
 import { Socket } from "socket.io"
 import { CreatePlayer } from "shared-utils/src/validations/createPlayer"
-import {
-  ClientToServerTicTacToeEvents,
-  Game,
-  Player,
-  ServerToClientEvents,
-} from "shared-utils"
-import { z } from "zod"
+import { Game, Player } from "shared-utils"
 
-// T extends Game make socket.to(game.id).emit('game', game) bug on game type
-// type CustomSocket<T extends Game> = Socket<
-type CustomSocket = Socket<
-  ClientToServerTicTacToeEvents,
-  ServerToClientEvents<Game>
->
-export class GameController<T extends Game> {
+export class GameController<G extends Game, S extends Socket> {
   private _name: string
-  private _games: T[]
+  private _games: G[]
 
   constructor(name: string) {
     this._name = name
@@ -29,11 +17,11 @@ export class GameController<T extends Game> {
     return this._name
   }
 
-  get games(): T[] {
+  get games(): G[] {
     return this._games
   }
 
-  addGame(game: T): void {
+  addGame(game: G): void {
     this._games.push(game)
   }
 
@@ -43,30 +31,30 @@ export class GameController<T extends Game> {
     })
   }
 
-  getGame(gameId: string): T | undefined {
+  getGame(gameId: string): G | undefined {
     return this._games.find((game) => {
       return game.id === gameId
     })
   }
 
-  getGameNotFull(): T | undefined {
+  getGameNotFull(): G | undefined {
     return this._games.find((game) => {
       return !game.isFull() && game.status === "lobby" && !game.private
     })
   }
 
-  async onCreate(socket: Socket, player: CreatePlayer, game: T) {
+  async onCreate(socket: S, player: CreatePlayer, game: G) {
     this.games.push(game)
 
     this.onJoin(socket, game.id, player)
   }
 
-  async onGet(socket: Socket, gameId: string) {
+  async onGet(socket: S, gameId: string) {
     const game = this.getGame(gameId)
     if (game) socket.emit("game", game)
   }
 
-  async onJoin(socket: Socket, gameId: string, player: CreatePlayer) {
+  async onJoin(socket: S, gameId: string, player: CreatePlayer) {
     const game = this.getGame(gameId)
     if (!game || game.isFull()) return
 
@@ -81,7 +69,7 @@ export class GameController<T extends Game> {
     socket.to(gameId).emit("game", game)
   }
 
-  async onWin(socket: CustomSocket, game: T, winner: Player) {
+  async onWin(socket: S, game: G, winner: Player) {
     game.status = "finished"
     game.getPlayer(winner.socketID)?.addPoint()
 
@@ -89,13 +77,13 @@ export class GameController<T extends Game> {
     socket.to(game.id).emit("winner", game, winner)
   }
 
-  async onDraw(socket: Socket, game: T) {
+  async onDraw(socket: Socket, game: G) {
     game.status = "finished"
     socket.emit("draw", game)
     socket.to(game.id).emit("draw", game)
   }
 
-  async onReplay(socket: CustomSocket, gameId: string) {
+  async onReplay(socket: S, gameId: string) {
     const game = this.getGame(gameId)
     if (!game) return
 
@@ -111,7 +99,7 @@ export class GameController<T extends Game> {
     } else socket.to(game.id).emit("replay", game)
   }
 
-  async onLeave(socket: CustomSocket, gameId: string) {
+  async onLeave(socket: S, gameId: string) {
     const game = this.getGame(gameId)
     if (!game) return
 
