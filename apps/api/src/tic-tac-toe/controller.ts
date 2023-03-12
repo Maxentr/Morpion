@@ -1,15 +1,15 @@
 import { Socket } from "socket.io"
 import { GameController } from "../class/GameController"
 import {
-  ClientTicTacToeEvents,
+  CreatePlayer,
+  GetClientEvents,
   Player,
   ServerEvents,
   TicTacToe,
 } from "shared-utils"
-import { CreatePlayer } from "shared-utils/src/validations/createPlayer"
 
 export type TicTacToeSocket = Socket<
-  ClientTicTacToeEvents,
+  GetClientEvents<"tic-tac-toe">,
   ServerEvents<TicTacToe>
 >
 export default class TicTacToeController extends GameController<

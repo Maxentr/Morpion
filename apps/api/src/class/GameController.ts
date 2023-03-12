@@ -1,6 +1,5 @@
 import { Socket } from "socket.io"
-import { CreatePlayer } from "shared-utils/src/validations/createPlayer"
-import { Game, Player } from "shared-utils"
+import { CreatePlayer, Game, Player } from "shared-utils"
 
 export class GameController<G extends Game, S extends Socket> {
   private _name: string

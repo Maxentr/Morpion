@@ -1,9 +1,13 @@
 import { Socket } from "socket.io"
 import ticTacToeController, { TicTacToeSocket } from "./controller"
-import createPlayer, {
+import {
+  createPlayer,
   CreatePlayer,
-} from "shared-utils/src/validations/createPlayer"
-import { joinGame, JoinGame, playTicTacToe, PlayTicTacToe } from "shared-utils"
+  joinGame,
+  JoinGame,
+  playTicTacToe,
+  PlayTicTacToe,
+} from "shared-utils"
 
 const instance = ticTacToeController.getInstance()
 
