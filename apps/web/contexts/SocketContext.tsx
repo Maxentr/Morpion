@@ -1,27 +1,38 @@
 "use client"
 
-import React, { createContext, useContext, useEffect, useState } from "react"
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react"
 import { io, Socket } from "socket.io-client"
+import type {} from "shared-utils/types/socket"
 import {
-  ClientToServerTicTacToeEvents,
-  ServerToClientEvents,
+  GetClientEvents,
+  ServerEvents,
+  SocketNamespaces,
   TicTacToe,
 } from "shared-utils"
 
-type CustomSocket = Socket<
-  ServerToClientEvents<TicTacToe>,
-  ClientToServerTicTacToeEvents
+type DynamicSocket<N extends SocketNamespaces = "default"> = Socket<
+  ServerEvents<TicTacToe>,
+  GetClientEvents<N>
 >
 
-type SocketContextInterface = {
-  socket: CustomSocket | null
-  connect: (namespace?: string) => CustomSocket
+type SocketContextInterface<S extends SocketNamespaces = "default"> = {
+  socket: DynamicSocket<S> | undefined
+  getSocket: () => DynamicSocket<S> | undefined
+  /** if useSocket is typed with a namespace, connect can only be called with the same namespace */
+  connect: <N extends S extends "default" ? SocketNamespaces : S>(
+    namespace?: N,
+  ) => DynamicSocket<N>
 }
-
 const SocketContext = createContext({} as SocketContextInterface)
 
-const SocketContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const [socket, setSocket] = useState<CustomSocket | null>(null)
+const SocketContextProvider = ({ children }: PropsWithChildren) => {
+  const [socket, setSocket] = useState<DynamicSocket>()
 
   useEffect(() => {
     return () => {
@@ -29,7 +40,7 @@ const SocketContextProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [socket])
 
-  const connect = (namespace?: string) => {
+  const connect = (namespace?: SocketNamespaces) => {
     if (socket) socket.disconnect()
 
     const newSocket = io(`http://localhost:3001/${namespace}`, {
@@ -37,12 +48,17 @@ const SocketContextProvider = ({ children }: { children: React.ReactNode }) => {
     })
 
     setSocket(newSocket)
-    return newSocket as CustomSocket
+    return newSocket
+  }
+
+  const getSocket = () => {
+    if (socket) return socket
   }
 
   return (
     <SocketContext.Provider
       value={{
+        getSocket,
         socket,
         connect,
       }}
@@ -52,5 +68,9 @@ const SocketContextProvider = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-export const useSocket = () => useContext(SocketContext)
+/**
+ * Give a namespace to useSocket to get a typed socket instance!
+ */
+export const useSocket = <N extends SocketNamespaces>(namespace?: N) =>
+  useContext(SocketContext) as SocketContextInterface<N>
 export default SocketContextProvider
