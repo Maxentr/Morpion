@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation"
 import React, { ComponentType, useEffect, useState } from "react"
-import { useSocket } from "../contexts/SocketContext"
-import { useUser } from "../contexts/UserContext"
+import { useSocket } from "~/contexts/SocketContext"
+import { useUser } from "~/contexts/UserContext"
 
 const withAuth = <P extends object>(
   WrappedComponent: ComponentType<P>,

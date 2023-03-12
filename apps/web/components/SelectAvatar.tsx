@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
 import React, { useEffect, useState } from "react"
 import type { Avatar } from "shared-utils"
-import { useUser } from "../contexts/UserContext"
+import { useUser } from "~/contexts/UserContext"
 import UserAvatar from "./UserAvatar"
 
 const availableAvatars: Avatar[] = [

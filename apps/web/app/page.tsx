@@ -4,9 +4,9 @@ import { Button, Input } from "ui"
 import { Shantell_Sans } from "next/font/google"
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useSocket } from "../contexts/SocketContext"
-import SelectAvatar from "../components/SelectAvatar"
-import { useUser } from "../contexts/UserContext"
+import { useSocket } from "~/contexts/SocketContext"
+import SelectAvatar from "~/components/SelectAvatar"
+import { useUser } from "~/contexts/UserContext"
 import { Player, TicTacToe } from "shared-utils"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })

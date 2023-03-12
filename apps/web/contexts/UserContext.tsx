@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { Avatar } from "shared-types"
+import type { Avatar } from "shared-utils"
 
 type UserContextInterface = {
   name: string

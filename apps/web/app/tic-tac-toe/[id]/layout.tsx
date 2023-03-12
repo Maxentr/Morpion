@@ -1,7 +1,7 @@
 "use client"
 
 import React, { PropsWithChildren } from "react"
-import withAuth from "../../../components/withAuth"
+import withAuth from "~/components/withAuth"
 
 const AdminLayout = ({ children }: PropsWithChildren) => {
   return <>{children}</>

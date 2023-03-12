@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react"
 import { Shantell_Sans } from "next/font/google"
-import Circle from "../../../components/Circle"
+import Circle from "~/components/Circle"
 import { XMarkIcon } from "@heroicons/react/24/outline"
-import UserAvatar from "../../../components/UserAvatar"
-import { useSocket } from "../../../contexts/SocketContext"
-import { useUser } from "../../../contexts/UserContext"
+import UserAvatar from "~/components/UserAvatar"
+import { useSocket } from "~/contexts/SocketContext"
+import { useUser } from "~/contexts/UserContext"
 import { Button } from "ui"
 import { GAME_STATUS, Player, TicTacToe } from "shared-utils"
 

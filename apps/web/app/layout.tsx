@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from "react"
-import SocketContextProvider from "../contexts/SocketContext"
-import UserContextProvider from "../contexts/UserContext"
-import "../styles/globals.css"
+import SocketContextProvider from "~/contexts/SocketContext"
+import UserContextProvider from "~/contexts/UserContext"
+import "~/styles/globals.css"
 
 const layout = ({ children }: PropsWithChildren) => {
   return (
