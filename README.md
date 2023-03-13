@@ -1,6 +1,15 @@
-# Tic Tac Toe
+# Games
 
-This is a simple Tic Tac Toe game written in TypeScript. React for the front and Fastify for the backend. Communication between the two is done via WebSockets using (Socket.io)[https://socket.io/]. There is currently no database, so the game state is stored in memory.
+A monorepo for games written in TypeScript. See [Available games](#available-games) for a list of games.
+
+## Tech stack
+
+- [pnpm](https://pnpm.io/) for package management.
+- [Turborepo](https://turborepo.com/) for managing the monorepo.
+- [TypeScript](https://www.typescriptlang.org/) for type safety.
+- [Nextjs](https://nextjs.org/) for the frontend (web)
+- [Fastify](https://www.fastify.io/) and [Socket.io](https://socket.io/) for the backend.
+- There is currently **no database**, so the game state is stored in memory.
 
 ## How to run
 
@@ -18,7 +27,9 @@ pnpm install
 pnpm dev --filter PACKAGE_NAME
 ```
 
-## TODO
+## Available games
 
-- Change how replay works
-- store Player in the user context
+| Game        | Status             |
+| :---------- | :----------------- |
+| Tic Tac Toe | :heavy_check_mark: |
+| Connect 4   | :white_check_mark: |
