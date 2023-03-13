@@ -1,7 +1,7 @@
 import { Game } from "./Game"
 import { Player } from "./Player"
 
-export class Power4 extends Game {
+export class ConnectFour extends Game {
   board: string[][]
 
   constructor(privateGame: boolean = false) {
