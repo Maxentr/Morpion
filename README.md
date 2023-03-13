@@ -29,7 +29,7 @@ pnpm dev --filter PACKAGE_NAME
 
 ## Available games
 
-| Game        | Status             |
-| :---------- | :----------------- |
-| Tic Tac Toe | :heavy_check_mark: |
-| Connect 4   | :white_check_mark: |
+| Game        | Status      |
+| :---------- | :---------- |
+| Tic Tac Toe | Playable    |
+| Connect 4   | In progress |
