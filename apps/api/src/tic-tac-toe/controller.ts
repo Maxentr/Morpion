@@ -19,7 +19,7 @@ export default class TicTacToeController extends GameController<
   private static instance: TicTacToeController
 
   private constructor() {
-    super("TicTacToe")
+    super("tic-tac-toe")
   }
 
   static getInstance(): TicTacToeController {
