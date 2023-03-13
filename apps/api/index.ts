@@ -14,7 +14,12 @@ server.ready((err) => {
   )
 
   server.io.of("tic-tac-toe").on("connection", (socket) => {
-    console.info("Socket connected in tic tac toe !", socket.id)
+    console.info("Socket connected in tic tac toe game !", socket.id)
+    registerTicTacToeNamespace(socket)
+  })
+
+  server.io.of("connect-four").on("connection", (socket) => {
+    console.info("Socket connected in connect four game !", socket.id)
     registerTicTacToeNamespace(socket)
   })
 })
