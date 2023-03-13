@@ -1,7 +1,7 @@
 import { Game } from "../../class/Game"
 import { Player } from "../../class/Player"
 
-export type ServerEvents<T extends Game> = {
+export type ServerGameEvents<T extends Game> = {
   joinGame: (game: T) => void
   game: (game: T) => void
   winner: (game: T, winner: Player) => void

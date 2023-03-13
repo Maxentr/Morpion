@@ -11,13 +11,13 @@ import { io, Socket } from "socket.io-client"
 import type {} from "shared-utils/types/socket"
 import {
   GetClientEvents,
-  ServerEvents,
+  ServerGameEvents,
   SocketNamespaces,
   TicTacToe,
 } from "shared-utils"
 
 type DynamicSocket<N extends SocketNamespaces = "default"> = Socket<
-  ServerEvents<TicTacToe>,
+  ServerGameEvents<TicTacToe>,
   GetClientEvents<N>
 >
 

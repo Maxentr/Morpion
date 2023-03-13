@@ -4,13 +4,13 @@ import {
   CreatePlayer,
   GetClientEvents,
   Player,
-  ServerEvents,
+  ServerGameEvents,
   TicTacToe,
 } from "shared-utils"
 
 export type TicTacToeSocket = Socket<
   GetClientEvents<"tic-tac-toe">,
-  ServerEvents<TicTacToe>
+  ServerGameEvents<TicTacToe>
 >
 export default class TicTacToeController extends GameController<
   TicTacToe,
