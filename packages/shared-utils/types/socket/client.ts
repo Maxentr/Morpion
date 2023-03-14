@@ -1,4 +1,3 @@
-import { Player } from "../../class/Player"
 import { JoinGame } from "../../validations/joinGame"
 import { CreatePlayer } from "../../validations/createPlayer"
 import { PlayTicTacToe } from "../../validations/playTicTacToe"
@@ -7,7 +6,7 @@ import { SocketNamespaces } from "./common"
 type ClientEvents = {
   join: ({ gameId, player }: JoinGame) => void
   find: (player: CreatePlayer) => void
-  createPrivate: (player: Player) => void
+  createPrivate: (player: CreatePlayer) => void
   get: (gameId: string) => void
   replay: (gameId: string) => void
   leave: (gameId: string) => void
