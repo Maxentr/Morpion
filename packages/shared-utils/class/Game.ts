@@ -2,7 +2,7 @@ import { Player } from "./Player"
 
 export type GAME_STATUS = "lobby" | "playing" | "finished"
 
-export class Game<T extends Player = Player> {
+export abstract class Game<T extends Player = Player> {
   id: string
   status: GAME_STATUS
   maxPlayers: number
