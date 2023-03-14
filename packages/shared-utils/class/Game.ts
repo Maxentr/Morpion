@@ -7,12 +7,12 @@ export type GameToJSON<T extends Player = Player> = Pick<
   "id" | "status" | "maxPlayers" | "players" | "turn" | "private"
 >
 export interface IGame<T extends Player = Player> {
-  id: string
+  readonly id: string
+  readonly private: boolean
   status: GAME_STATUS
   maxPlayers: number
   players: T[]
   turn: number
-  private: boolean
 
   getPlayer(playerSocketID: string): T | undefined
   addPlayer(player: T): void
@@ -27,16 +27,16 @@ export interface IGame<T extends Player = Player> {
 
 export abstract class Game<T extends Player = Player> implements IGame<T> {
   // generate a random game id with 8 characters (a-z, A-Z, 0-9)
-  private _id: string = Math.random().toString(36).substring(2, 10)
+  readonly _id: string = Math.random().toString(36).substring(2, 10)
+  readonly _private!: boolean
   private _status: GAME_STATUS = "lobby"
-  private _maxPlayers: number = 0
+  private _maxPlayers!: number
   private _players: T[] = []
   private _turn: number = 0
-  private _private: boolean = false
 
   constructor(maxPlayers: number, privateGame: boolean) {
     this.maxPlayers = maxPlayers
-    this.private = privateGame
+    this._private = privateGame
 
     return this
   }
@@ -72,12 +72,9 @@ export abstract class Game<T extends Player = Player> implements IGame<T> {
   private set turn(value: number) {
     this._turn = value
   }
-  
+
   public get private(): boolean {
     return this._private
-  }
-  private set private(value: boolean) {
-    this._private = value
   }
 
   getPlayer(playerSocketID: string) {
