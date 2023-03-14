@@ -6,11 +6,12 @@ import {
   Player,
   ServerGameEvents,
   TicTacToe,
+  TicTacToeToJSON,
 } from "shared-utils"
 
 export type TicTacToeSocket = Socket<
   GetClientEvents<"tic-tac-toe">,
-  ServerGameEvents<TicTacToe>
+  ServerGameEvents<TicTacToeToJSON>
 >
 export default class TicTacToeController extends GameController<
   TicTacToe,
@@ -30,12 +31,16 @@ export default class TicTacToeController extends GameController<
     return TicTacToeController.instance
   }
 
-  async create(socket: Socket, player: CreatePlayer, isPrivate = true) {
+  async create(
+    socket: TicTacToeSocket,
+    player: CreatePlayer,
+    isPrivate = true,
+  ) {
     const game = new TicTacToe(isPrivate)
     this.onCreate(socket, player, game)
   }
 
-  async play(socket: Socket, gameId: string, x: number, y: number) {
+  async play(socket: TicTacToeSocket, gameId: string, x: number, y: number) {
     const game = this.getGame(gameId)
     if (!game) return
     if (!game.checkTurn(socket.id)) return
@@ -48,8 +53,8 @@ export default class TicTacToeController extends GameController<
     else {
       game.nextTurn()
 
-      socket.emit("game", game)
-      socket.to(gameId).emit("game", game)
+      socket.emit("game", game.toJSON())
+      socket.to(gameId).emit("game", game.toJSON())
     }
   }
 }
