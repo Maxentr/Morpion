@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useSocket } from "~/contexts/SocketContext"
 import SelectAvatar from "~/components/SelectAvatar"
 import { useUser } from "~/contexts/UserContext"
-import { Player, TicTacToe } from "shared-utils"
+import { CreatePlayer, TicTacToeToJSON } from "shared-utils"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
@@ -34,16 +34,16 @@ const Index = () => {
     setLoading(true)
     saveUserInLocalStorage()
 
-    const socket = connect()
+    const socket = connect("tic-tac-toe")
 
-    const player: Pick<Player, "name" | "avatar"> = {
+    const player: CreatePlayer = {
       name,
       avatar,
     }
     if (gameId && type === "join") socket.emit("join", { gameId, player })
     else socket.emit(type, { name, avatar })
 
-    socket.on("joinGame", (game: TicTacToe) => {
+    socket.on("joinGame", (game: TicTacToeToJSON) => {
       console.table(game.id)
       setLoading(false)
       router.push(`/tic-tac-toe/${game.id}`)

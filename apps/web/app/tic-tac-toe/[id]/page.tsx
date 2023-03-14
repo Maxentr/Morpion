@@ -8,7 +8,7 @@ import UserAvatar from "~/components/UserAvatar"
 import { useSocket } from "~/contexts/SocketContext"
 import { useUser } from "~/contexts/UserContext"
 import { Button } from "ui"
-import { GAME_STATUS, Player, TicTacToe } from "shared-utils"
+import { GAME_STATUS, PlayerToJSON, TicTacToeToJSON } from "shared-utils"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
@@ -63,14 +63,14 @@ const Page = ({ params }: Props) => {
     socket?.emit("get", params.id)
   }
 
-  const updateGame = async (game: TicTacToe) => {
+  const updateGame = async (game: TicTacToeToJSON) => {
     setBoard(game.board)
     setTurn(game.players[game.turn].name === name)
     setPlayers(game.players)
     setGameState(game.status)
   }
 
-  const onGameUpdate = async (game: TicTacToe) => {
+  const onGameUpdate = async (game: TicTacToeToJSON) => {
     updateGame(game)
 
     if (game.status === "lobby") {
@@ -88,13 +88,13 @@ const Page = ({ params }: Props) => {
     }
   }
 
-  const onGameEnd = async (game: TicTacToe, winner: Player) => {
+  const onGameEnd = async (game: TicTacToeToJSON, winner: PlayerToJSON) => {
     updateGame(game)
 
     setInformation(`${winner.name} (${winner.avatar}) a gagné !`)
   }
 
-  const onGameDraw = async (game: TicTacToe) => {
+  const onGameDraw = async (game: TicTacToeToJSON) => {
     updateGame(game)
 
     setInformation("Match nul !")

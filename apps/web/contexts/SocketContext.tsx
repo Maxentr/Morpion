@@ -13,11 +13,11 @@ import {
   GetClientEvents,
   ServerGameEvents,
   SocketNamespaces,
-  TicTacToe,
+  TicTacToeToJSON,
 } from "shared-utils"
 
 type DynamicSocket<N extends SocketNamespaces = "default"> = Socket<
-  ServerGameEvents<TicTacToe>,
+  ServerGameEvents<TicTacToeToJSON>,
   GetClientEvents<N>
 >
 
