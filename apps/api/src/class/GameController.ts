@@ -1,7 +1,7 @@
 import { Socket } from "socket.io"
 import { CreatePlayer, Game, Player } from "shared-utils"
 
-export class GameController<G extends Game, S extends Socket> {
+export abstract class GameController<G extends Game, S extends Socket> {
   private _name: string
   private _games: G[]
 
