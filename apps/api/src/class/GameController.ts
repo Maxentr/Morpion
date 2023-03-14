@@ -2,42 +2,44 @@ import { Socket } from "socket.io"
 import { CreatePlayer, Game, Player } from "shared-utils"
 
 export abstract class GameController<G extends Game, S extends Socket> {
-  private _name: string
-  private _games: G[]
+  readonly _name: string
+  private _games: G[] = []
 
   constructor(name: string) {
     this._name = name
-    this._games = []
 
     return this
   }
 
-  get name(): string {
+  get name() {
     return this._name
   }
 
-  get games(): G[] {
+  get games() {
     return this._games
   }
-
-  addGame(game: G): void {
-    this._games.push(game)
+  private set games(games: G[]) {
+    this._games = games
   }
 
-  removeGame(gameId: string): void {
-    this._games = this._games.filter((game) => {
+  addGame(game: G) {
+    this.games.push(game)
+  }
+
+  removeGame(gameId: string) {
+    this.games = this.games.filter((game) => {
       return game.id !== gameId
     })
   }
 
-  getGame(gameId: string): G | undefined {
-    return this._games.find((game) => {
+  getGame(gameId: string) {
+    return this.games.find((game) => {
       return game.id === gameId
     })
   }
 
-  getGameNotFull(): G | undefined {
-    return this._games.find((game) => {
+  getGameNotFull() {
+    return this.games.find((game) => {
       return !game.isFull() && game.status === "lobby" && !game.private
     })
   }
@@ -50,7 +52,7 @@ export abstract class GameController<G extends Game, S extends Socket> {
 
   async onGet(socket: S, gameId: string) {
     const game = this.getGame(gameId)
-    if (game) socket.emit("game", game)
+    if (game) socket.emit("game", game.toJSON())
   }
 
   async onJoin(socket: S, gameId: string, player: CreatePlayer) {
@@ -63,23 +65,23 @@ export abstract class GameController<G extends Game, S extends Socket> {
 
     if (game.status === "lobby" && game.isFull()) game.start()
 
-    socket.emit("joinGame", game)
+    socket.emit("joinGame", game.toJSON())
 
-    socket.to(gameId).emit("game", game)
+    socket.to(gameId).emit("game", game.toJSON())
   }
 
   async onWin(socket: S, game: G, winner: Player) {
     game.status = "finished"
     game.getPlayer(winner.socketID)?.addPoint()
 
-    socket.emit("winner", game, winner)
-    socket.to(game.id).emit("winner", game, winner)
+    socket.emit("winner", game.toJSON(), winner.toJSON())
+    socket.to(game.id).emit("winner", game.toJSON(), winner.toJSON())
   }
 
-  async onDraw(socket: Socket, game: G) {
+  async onDraw(socket: S, game: G) {
     game.status = "finished"
-    socket.emit("draw", game)
-    socket.to(game.id).emit("draw", game)
+    socket.emit("draw", game.toJSON())
+    socket.to(game.id).emit("draw", game.toJSON())
   }
 
   async onReplay(socket: S, gameId: string) {
@@ -94,8 +96,8 @@ export abstract class GameController<G extends Game, S extends Socket> {
       game.start()
 
       socket.emit("game", game)
-      socket.to(game.id).emit("game", game)
-    } else socket.to(game.id).emit("replay", game)
+      socket.to(game.id).emit("game", game.toJSON())
+    } else socket.to(game.id).emit("replay", game.toJSON())
   }
 
   async onLeave(socket: S, gameId: string) {
@@ -105,12 +107,12 @@ export abstract class GameController<G extends Game, S extends Socket> {
     game.removePlayer(socket.id)
     await socket.leave(game.id)
 
-    socket.emit("leaveGame", game)
+    socket.emit("leaveGame", game.toJSON())
 
     if (game.players.length === 0) {
       this.removeGame(game.id)
     } else {
-      socket.to(game.id).emit("playerLeave", game)
+      socket.to(game.id).emit("playerLeave", game.toJSON())
     }
   }
 }
