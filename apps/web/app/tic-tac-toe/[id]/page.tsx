@@ -46,6 +46,7 @@ const Page = ({ params }: Props) => {
     socket?.on("winner", onGameEnd)
     socket?.on("draw", onGameDraw)
     socket?.on("replay", onReplay)
+    socket?.on("playerLeave", onPlayerLeave)
   }
 
   const gameListenersDestroy = async () => {
@@ -53,6 +54,7 @@ const Page = ({ params }: Props) => {
     socket?.off("winner", onGameEnd)
     socket?.off("draw", onGameDraw)
     socket?.off("replay", onReplay)
+    socket?.off("playerLeave", onPlayerLeave)
   }
 
   const onReplay = () => {
@@ -65,7 +67,7 @@ const Page = ({ params }: Props) => {
 
   const updateGame = async (game: TicTacToeToJSON) => {
     setBoard(game.board)
-    setTurn(game.players[game.turn].name === name)
+    setTurn(game.players[game.turn]?.name === name)
     setPlayers(game.players)
     setGameState(game.status)
   }
@@ -98,6 +100,12 @@ const Page = ({ params }: Props) => {
     updateGame(game)
 
     setInformation("Match nul !")
+  }
+
+  const onPlayerLeave = async (game: TicTacToeToJSON) => {
+    updateGame(game)
+
+    setInformation("Votre adversaire a quitté la partie !")
   }
 
   const handleReplay = async () => {
@@ -178,7 +186,7 @@ const Page = ({ params }: Props) => {
           )}
         </div>
         <UserAvatar
-          avatar={players?.[1]?.avatar || "octopus"}
+          avatar={players?.[1]?.avatar}
           pseudo={players?.[1]?.name || "..."}
           score={players?.[1]?.score}
         />
