@@ -44,7 +44,6 @@ const Index = () => {
     else socket.emit(type, { name, avatar })
 
     socket.on("joinGame", (game: TicTacToeToJSON) => {
-      console.table(game.id)
       setLoading(false)
       router.push(`/tic-tac-toe/${game.id}`)
     })

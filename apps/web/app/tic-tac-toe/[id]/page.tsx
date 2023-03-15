@@ -25,12 +25,12 @@ const Page = ({ params }: Props) => {
     ["", "", ""],
   ])
   const [turn, setTurn] = useState(false)
-  const [players, setPlayers] = useState<any[]>([])
+  const [players, setPlayers] = useState<PlayerToJSON[]>([])
   const [gameState, setGameState] = useState<GAME_STATUS>("lobby")
 
   const [information, setInformation] = useState("")
 
-  const gameURL = `http://localhost:3000/?gameId=${params.id}`
+  const gameURL = `${process.env.NEXT_PUBLIC_APP_URL}/?gameId=${params.id}`
 
   useEffect(() => {
     gameListenersInit()
@@ -169,7 +169,7 @@ const Page = ({ params }: Props) => {
                 type="text"
                 className="text-center w-full border outline-none rounded"
                 onClick={handleClipboard}
-                value={gameURL}
+                defaultValue={gameURL}
               />
             </div>
           )}

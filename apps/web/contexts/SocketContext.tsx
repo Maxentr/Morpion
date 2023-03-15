@@ -43,7 +43,7 @@ const SocketContextProvider = ({ children }: PropsWithChildren) => {
   const connect = (namespace?: SocketNamespaces) => {
     if (socket) socket.disconnect()
 
-    const newSocket = io(`http://localhost:3001/${namespace}`, {
+    const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/${namespace}`, {
       transports: ["websocket"],
     })
 
