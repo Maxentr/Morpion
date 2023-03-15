@@ -10,6 +10,7 @@ importers:
       '@commitlint/cz-commitlint': ^17.4.4
       '@pnpm/find-workspace-packages': ^5.0.36
       commitizen: ^4.3.0
+      dotenv-cli: latest
       eslint-config-custom: workspace:*
       husky: ^8.0.0
       inquirer: '8'
@@ -23,6 +24,7 @@ importers:
       '@commitlint/config-pnpm-scopes': 17.4.2_h6hqnxmbjjbviogiemgndy7avu
       '@commitlint/cz-commitlint': 17.4.4_vxihxaavopz44kmjrakxpdheeu
       commitizen: 4.3.0
+      dotenv-cli: 7.1.0
       eslint-config-custom: link:packages/eslint-config-custom
       husky: 8.0.3
       inquirer: 8.2.4
@@ -8086,8 +8088,28 @@ packages:
       is-obj: 2.0.0
     dev: true
 
+  /dotenv-cli/7.1.0:
+    resolution: {integrity: sha512-motytjZFQB3ZtGTIN4c0vnFgv4kuNZ2WxVnGY6PVFiygCzkm3IFBBguDUzezd9HgNA0OYYd6vNCWlozs0Q1Zxg==}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+      dotenv: 16.0.3
+      dotenv-expand: 10.0.0
+      minimist: 1.2.8
+    dev: true
+
+  /dotenv-expand/10.0.0:
+    resolution: {integrity: sha512-GopVGCpVS1UKH75VKHGuQFqS1Gusej0z4FyQkPdwjil2gNIv+LNsqBlboOzpJFZKVT95GkCyWJbBSdFEFUWI2A==}
+    engines: {node: '>=12'}
+    dev: true
+
   /dotenv-expand/5.1.0:
     resolution: {integrity: sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==}
+    dev: true
+
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
     dev: true
 
   /dotenv/8.6.0:
