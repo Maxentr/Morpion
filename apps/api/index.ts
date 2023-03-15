@@ -1,5 +1,6 @@
 import fastify from "fastify"
 import fastifyIO from "fastify-socket.io"
+import ticTacToeRouter from "./src/tic-tac-toe/router"
 import registerTicTacToeNamespace from "./src/tic-tac-toe/router"
 
 const server = fastify()
@@ -13,15 +14,7 @@ server.ready((err) => {
     console.info("Socket connected!", socket.id),
   )
 
-  server.io.of("tic-tac-toe").on("connection", (socket) => {
-    console.info("Socket connected in tic tac toe game !", socket.id)
-    registerTicTacToeNamespace(socket)
-  })
-
-  server.io.of("connect-four").on("connection", (socket) => {
-    console.info("Socket connected in connect four game !", socket.id)
-    registerTicTacToeNamespace(socket)
-  })
+  ticTacToeRouter(server.io.of("/tic-tac-toe"))
 })
 
 server.listen({ port: 3001 }, (err, address) => {
