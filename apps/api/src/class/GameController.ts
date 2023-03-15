@@ -38,6 +38,14 @@ export abstract class GameController<G extends Game, S extends Socket> {
     })
   }
 
+  private getGameByPlayerSocket(socketId: string) {
+    return this.games.find((game) => {
+      return game.players.find((player) => {
+        return player.socketID === socketId
+      })
+    })
+  }
+
   getGameNotFull() {
     return this.games.find((game) => {
       return !game.isFull() && game.status === "lobby" && !game.private
@@ -100,14 +108,13 @@ export abstract class GameController<G extends Game, S extends Socket> {
     } else socket.to(game.id).emit("replay", game.toJSON())
   }
 
-  async onLeave(socket: S, gameId: string) {
-    const game = this.getGame(gameId)
+  async onLeave(socket: S) {
+    const game = this.getGameByPlayerSocket(socket.id)
     if (!game) return
 
     game.removePlayer(socket.id)
+    game.status = "stopped"
     await socket.leave(game.id)
-
-    socket.emit("leaveGame", game.toJSON())
 
     if (game.players.length === 0) {
       this.removeGame(game.id)
