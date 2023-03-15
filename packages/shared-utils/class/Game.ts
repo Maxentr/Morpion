@@ -1,12 +1,20 @@
-import { Player } from "./Player"
+import { Player, PlayerToJSON } from "./Player"
 
 export type GAME_STATUS = "lobby" | "playing" | "finished"
 
-export type GameToJSON<T extends Player = Player> = Pick<
-  IGame<T>,
-  "id" | "status" | "maxPlayers" | "players" | "turn" | "private"
->
-export interface IGame<T extends Player = Player> {
+export type GameToJSON<J extends PlayerToJSON = PlayerToJSON> = {
+  id: string
+  status: GAME_STATUS
+  maxPlayers: number
+  players: J[]
+  turn: number
+  private: boolean
+}
+
+export interface IGame<
+  T extends Player = Player,
+  J extends PlayerToJSON = PlayerToJSON,
+> {
   readonly id: string
   readonly private: boolean
   status: GAME_STATUS
@@ -22,7 +30,7 @@ export interface IGame<T extends Player = Player> {
   checkTurn(playerSocketID: string): boolean
   nextTurn(): void
   reset(): void
-  toJSON(): GameToJSON<T>
+  toJSON(): GameToJSON<J>
 }
 
 export abstract class Game<T extends Player = Player> implements IGame<T> {
@@ -124,7 +132,7 @@ export abstract class Game<T extends Player = Player> implements IGame<T> {
       id: this.id,
       status: this.status,
       maxPlayers: this.maxPlayers,
-      players: this.players,
+      players: this.players.map((player) => player.toJSON()),
       turn: this.turn,
       private: this.private,
     }
