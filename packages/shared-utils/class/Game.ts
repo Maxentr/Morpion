@@ -1,6 +1,6 @@
 import { Player, PlayerToJSON } from "./Player"
 
-export type GAME_STATUS = "lobby" | "playing" | "finished"
+export type GAME_STATUS = "lobby" | "playing" | "finished" | "stopped"
 
 export type GameToJSON<J extends PlayerToJSON = PlayerToJSON> = {
   id: string
