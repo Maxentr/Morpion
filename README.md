@@ -39,9 +39,8 @@ pnpm dev --filter PACKAGE_NAME
 - [x] Abstract some classes
 - [x] Add a parse function in classes to parse the data for the client
 - [x] Refactor classes types
-- [ ] Dynamic ServerEvents type
-- [ ] Use ENV for WS_URL in client
-- [ ] Use ENV in API
-- [ ] Handle player disconnects
+- [ ] Dynamic ServerEvents type ?
+- [X] Use ENV variables
+- [X] Handle player disconnects
 - [ ] Deploy to Vercel and Fly.io
 - [ ] Create connect 4 game
