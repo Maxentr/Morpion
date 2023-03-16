@@ -1,9 +1,13 @@
 {
   "version": 2,
-  "builds": [
+  "buildCommand": "cd ../.. && pnpm build --filter api",
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install",
+  "regions": ["cdg1"],
+  "routes": [
     {
-      "src": "index.js",
-      "use": "@vercel/node"
+      "src": "/(.*)",
+      "dest": "/index.js"
     }
   ]
 }
