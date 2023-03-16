@@ -1,13 +1,13 @@
 {
   "version": 2,
   "buildCommand": "cd ../.. && pnpm build --filter api",
-  "outputDirectory": "dist",
+  "outputDirectory": ".",
   "installCommand": "pnpm install",
   "regions": ["cdg1"],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/index.js"
+      "source": "/(.*)",
+      "destination": "/serverless.js"
     }
   ]
 }
