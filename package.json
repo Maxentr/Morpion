@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "dotenv -- turbo run dev",
+    "prod": "dotenv -- turbo run prod",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "commit": "git-cz",

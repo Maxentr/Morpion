@@ -118,9 +118,14 @@ importers:
 
   packages/shared-utils:
     specifiers:
+      tsconfig: workspace:*
+      typescript: ^4.9.5
       zod: ^3.21.0
     dependencies:
       zod: 3.21.0
+    devDependencies:
+      tsconfig: link:../tsconfig
+      typescript: 4.9.5
 
   packages/tailwind-config:
     specifiers:
