@@ -18,6 +18,7 @@ const UserAvatar = ({ avatar, pseudo, score }: Props) => {
           height={100}
           alt={avatar}
           className="select-none"
+          priority
         />
       ) : (
         <div className="flex items-center justify-center w-[100px] h-[100px] bg-zinc-200 rounded-full">
