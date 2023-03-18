@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from "react"
 import { Shantell_Sans } from "next/font/google"
 import Circle from "~/components/Circle"
-import { XMarkIcon } from "@heroicons/react/24/outline"
 import UserAvatar from "~/components/UserAvatar"
 import { useSocket } from "~/contexts/SocketContext"
 import { useUser } from "~/contexts/UserContext"
 import { Button } from "ui"
 import { GAME_STATUS, PlayerToJSON, TicTacToeToJSON } from "shared-utils"
+import Cross from "~/components/Cross"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
@@ -159,9 +159,7 @@ const Page = ({ params }: Props) => {
                   }`}
                 >
                   {box === "X" && (
-                    <>
-                      <XMarkIcon className="w-20 h-20 md:w-28 md:h-28 text-highlight" />
-                    </>
+                    <Cross className="w-20 h-20 md:w-28 md:h-28 stroke-highlight fill-transparent" />
                   )}
                   {box === "O" && (
                     <Circle className="w-20 h-20 md:w-28 md:h-28 stroke-secondary fill-transparent" />
