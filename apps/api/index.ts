@@ -24,5 +24,3 @@ server.listen({ port: 3001 }, (err, address) => {
   }
   console.log(`Server listening at ${address}`)
 })
-
-export default server
