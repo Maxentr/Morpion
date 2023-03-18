@@ -1,99 +1,100 @@
-import { Game } from "./Game"
+import { Game, GameToJSON, IGame } from "./Game"
 import { Player } from "./Player"
 
-export class ConnectFour extends Game {
+export interface ConnectFourToJSON extends GameToJSON {
   board: string[][]
+}
+
+interface IConnectFour extends IGame {
+  play(playerSocketID: string, x: number): void
+  checkWin(): Player | "draw" | undefined
+  toJSON(): ConnectFourToJSON
+}
+export class ConnectFour extends Game implements IConnectFour {
+  private _board: string[][] = [
+    ["", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", ""],
+    ["", "", "", "", "", "", ""],
+  ]
 
   constructor(privateGame: boolean = false) {
     super(2, privateGame)
-    this.board = [
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-      ["", "", "", "", "", "", ""],
-    ]
-
     return this
   }
 
-  isAvailable(x: number, y: number): boolean {
-    return this.board[x][y] === ""
+  private get board(): string[][] {
+    return this._board
   }
 
-  play(playerSocketID: string, x: number, y: number): void {
+  private set board(board: string[][]) {
+    this._board = board
+  }
+
+  private getSymbol() {
+    return this.turn === 0 ? "X" : "O"
+  }
+
+  private getColY(x: number) {
+    for (let y = 5; y > -1; y--) {
+      if (this.board[y][x] === "") return y
+    }
+  }
+
+  play(playerSocketID: string, x: number): void {
     const player = this.getPlayer(playerSocketID)
 
     if (!player || this.status !== "playing") return
     if (this.players[this.turn].socketID !== player.socketID) return
 
-    if (this.isAvailable(x, y)) this.board[x][y] = this.turn === 0 ? "X" : "O"
+    const y = this.getColY(x)
+    console.log(x, y)
+    if (typeof y === "number") this.board[y][x] = this.getSymbol()
   }
 
   checkWin(): Player | "draw" | undefined {
     const board = this.board
     const player = this.players[this.turn]
-    const symbol = this.turn === 0 ? "X" : "O"
+    const symbol = this.getSymbol()
 
-    // check columns
-    for (let i = 0; i < 7; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (
-          board[j][i] === symbol &&
-          board[j + 1][i] === symbol &&
-          board[j + 2][i] === symbol &&
-          board[j + 3][i] === symbol
-        ) {
-          return player
-        }
+    // check rows
+    for (let y = 0; y < 6; y++) {
+      for (let x = 0; x < 4; x++) {
+        const row = board[y].slice(x, x + 4)
+        if (row.every((cell) => cell === symbol)) return player
       }
     }
 
-    // check rows
-    for (let i = 0; i < 6; i++) {
-      for (let j = 0; j < 4; j++) {
-        if (
-          board[i][j] === symbol &&
-          board[i][j + 1] === symbol &&
-          board[i][j + 2] === symbol &&
-          board[i][j + 3] === symbol
-        ) {
-          return player
-        }
+    // check columns
+    for (let x = 0; x < 7; x++) {
+      for (let y = 0; y < 3; y++) {
+        const col = board.slice(y, y + 4).map((row) => row[x])
+        if (col.every((cell) => cell === symbol)) return player
       }
     }
 
     // check diagonals
-
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 4; j++) {
-        if (
-          board[i][j] === symbol &&
-          board[i + 1][j + 1] === symbol &&
-          board[i + 2][j + 2] === symbol &&
-          board[i + 3][j + 3] === symbol
-        ) {
-          return player
-        }
-      }
-    }
-    for (let i = 0; i < 3; i++) {
-      for (let j = 3; j < 7; j++) {
-        if (
-          board[i][j] === symbol &&
-          board[i + 1][j - 1] === symbol &&
-          board[i + 2][j - 2] === symbol &&
-          board[i + 3][j - 3] === symbol
-        ) {
-          return player
-        }
+    for (let x = 0; x < 4; x++) {
+      for (let y = 0; y < 3; y++) {
+        const diagonal = board.slice(y, y + 4).map((row, i) => row[x + i])
+        if (diagonal.every((cell) => cell === symbol)) return player
       }
     }
 
-    // check draw
-    if (board.every((row) => row.every((cell) => cell !== ""))) {
-      return "draw"
+    for (let x = 0; x < 4; x++) {
+      for (let y = 5; y > 2; y--) {
+        const diagonal = board.slice(y - 3, y + 1).map((row, i) => row[x + i])
+        if (diagonal.every((cell) => cell === symbol)) return player
+      }
+    }
+
+    // check if there are still empty spots
+    for (let y = 0; y < 6; y++) {
+      for (let x = 0; x < 7; x++) {
+        if (this.board[y][x] !== "") return undefined
+      }
     }
 
     return undefined
@@ -109,5 +110,12 @@ export class ConnectFour extends Game {
       ["", "", "", "", "", "", ""],
       ["", "", "", "", "", "", ""],
     ]
+  }
+
+  override toJSON() {
+    return {
+      ...super.toJSON(),
+      board: this.board,
+    }
   }
 }
