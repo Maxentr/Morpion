@@ -39,8 +39,11 @@ pnpm dev --filter PACKAGE_NAME
 - [x] Abstract some classes
 - [x] Add a parse function in classes to parse the data for the client
 - [x] Refactor classes types
-- [ ] Dynamic ServerEvents type ?
 - [X] Use ENV variables
 - [X] Handle player disconnects
-- [ ] Deploy to Vercel and Fly.io
+- [ ] End game modal (win, draw, disconnect)
+- [ ] Share the game page by being as flexible as possible
 - [ ] Create connect 4 game
+- [ ] Dark mode
+- [ ] Translations (en, fr)
+- [ ] Deploy to Vercel and Fly.io (monorepo seems to be a problem for Fly.io)
