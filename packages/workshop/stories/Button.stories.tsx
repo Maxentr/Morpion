@@ -8,7 +8,7 @@ const meta: Meta = {
 }
 
 const Template: Story = (args) => (
-  <Button label={args.label} variant={args.variant} color={args.color} size={args.size} loading={args.loading} />
+  <Button label={args.label} variant={args.variant} color={args.color} size={args.size} loading={args.loading} disabled={args.disabled} />
 )
 
 export const Primary = Template.bind({})
@@ -17,6 +17,8 @@ Primary.args = {
   variant: "filled",
   color: "primary",
   size: "normal",
+  loading: false,
+  disabled: false,
 }
 
 export default meta

@@ -19,11 +19,11 @@ const getTextColorStyle: Record<string, string> = {
   filledtertiary: "text-white",
   filledhighlight: "text-white",
   filledcustomBlack: "text-primary",
-  outlinedprimary: "text-customBlack",
-  outlinedsecondary: "text-secondary",
-  outlinedtertiary: "text-tertiary",
-  outlinedhighlight: "text-highlight",
-  outlinedcustomBlack: "text-customBlack",
+  outlinedprimary: "text-customBlack disabled:text-opacity-50",
+  outlinedsecondary: "text-secondary disabled:text-opacity-50",
+  outlinedtertiary: "text-tertiary disabled:text-opacity-50",
+  outlinedhighlight: "text-highlight disabled:text-opacity-50",
+  outlinedcustomBlack: "text-customBlack disabled:text-opacity-50",
 }
 
 const getSizeStyle = {
@@ -56,7 +56,7 @@ const Button = ({
 }: Props) => {
   return (
     <button
-      className={`relative ${getVariantStyle[variant]} ${
+      className={`relative disabled:bg-opacity-50 disabled:border-opacity-50 ${getVariantStyle[variant]} ${
         getColorStyle[color]
       } ${getSizeStyle[size]} ${getTextColorStyle[variant + color]} ${
         loading && `cursor-wait`
