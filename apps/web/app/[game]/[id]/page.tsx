@@ -7,12 +7,18 @@ import UserAvatar from "~/components/UserAvatar"
 import { useSocket } from "~/contexts/SocketContext"
 import { useUser } from "~/contexts/UserContext"
 import { Button } from "ui"
-import { GAME_STATUS, PlayerToJSON, TicTacToeToJSON } from "shared-utils"
+import {
+  GameNames,
+  GAME_STATUS,
+  PlayerToJSON,
+  TicTacToeToJSON,
+} from "shared-utils"
 import Cross from "~/components/Cross"
+import ClipboardInput from "~/components/ClipboardInput"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
-type Props = { params: { id: string } }
+type Props = { params: { game: GameNames; id: string } }
 
 const Page = ({ params }: Props) => {
   const { socket } = useSocket("tic-tac-toe")
@@ -30,7 +36,7 @@ const Page = ({ params }: Props) => {
 
   const [information, setInformation] = useState("")
 
-  const gameURL = `${process.env.NEXT_PUBLIC_APP_URL}/?gameId=${params.id}`
+  const gameURL = `${process.env.NEXT_PUBLIC_APP_URL}/${params.game}?gameId=${params.id}`
 
   useEffect(() => {
     gameListenersInit()
@@ -122,16 +128,6 @@ const Page = ({ params }: Props) => {
     })
   }
 
-  const handleClipboard = (e: any) => {
-    navigator.clipboard.writeText(gameURL)
-    e.target.blur()
-    e.target.value = "Copié !"
-
-    setTimeout(() => {
-      e.target.value = gameURL
-    }, 2000)
-  }
-
   return (
     <div className="flex flex-col gap-4 flex-1 items-center justify-center">
       <h1
@@ -169,16 +165,7 @@ const Page = ({ params }: Props) => {
             )}
           </div>
           <p className="text-center">{information}</p>
-          {gameState === "lobby" && (
-            <div>
-              <input
-                type="text"
-                className="text-center w-full border outline-none rounded"
-                onClick={handleClipboard}
-                defaultValue={gameURL}
-              />
-            </div>
-          )}
+          {gameState === "lobby" && <ClipboardInput value={gameURL} />}
           {gameState === "finished" && (
             <Button onClick={handleReplay} label="Rejouer" />
           )}
