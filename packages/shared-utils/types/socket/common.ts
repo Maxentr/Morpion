@@ -7,6 +7,5 @@ export type GameNames = keyof typeof GAME_NAMES
 
 export const SOCKET_NAMESPACES = {
   ...GAME_NAMES,
-  default: "default",
 } as const
 export type SocketNamespaces = keyof typeof SOCKET_NAMESPACES

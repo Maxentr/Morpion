@@ -8,31 +8,29 @@ import React, {
   useState,
 } from "react"
 import { io, Socket } from "socket.io-client"
-import type {} from "shared-utils/types/socket"
-import {
+import type {
   GetClientEvents,
-  ServerGameEvents,
+  GetServerEvents,
   SocketNamespaces,
-  TicTacToeToJSON,
 } from "shared-utils"
 
-type DynamicSocket<N extends SocketNamespaces = "default"> = Socket<
-  ServerGameEvents<TicTacToeToJSON>,
+export type DynamicSocket<N extends SocketNamespaces> = Socket<
+  GetServerEvents<N>,
   GetClientEvents<N>
 >
 
-type SocketContextInterface<S extends SocketNamespaces = "default"> = {
+type SocketContextInterface<S extends SocketNamespaces> = {
   socket: DynamicSocket<S> | undefined
   getSocket: () => DynamicSocket<S> | undefined
   /** if useSocket is typed with a namespace, connect can only be called with the same namespace */
-  connect: <N extends S extends "default" ? SocketNamespaces : S>(
-    namespace?: N,
-  ) => DynamicSocket<N>
+  connect: <N extends SocketNamespaces>(namespace?: N) => DynamicSocket<N>
 }
-const SocketContext = createContext({} as SocketContextInterface)
+const SocketContext = createContext(
+  {} as SocketContextInterface<SocketNamespaces>,
+)
 
 const SocketContextProvider = ({ children }: PropsWithChildren) => {
-  const [socket, setSocket] = useState<DynamicSocket>()
+  const [socket, setSocket] = useState<DynamicSocket<SocketNamespaces>>()
 
   useEffect(() => {
     return () => {
