@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { Shantell_Sans } from "next/font/google"
 import UserAvatar from "~/components/UserAvatar"
 import { useSocket } from "~/contexts/SocketContext"
 import { useUser } from "~/contexts/UserContext"
@@ -9,8 +8,6 @@ import { Button } from "ui"
 import { PlayerToJSON, TicTacToeToJSON } from "shared-utils"
 import ClipboardInput from "~/components/ClipboardInput"
 import Piece from "~/components/Piece"
-
-const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
 type Props = { gameId: string; gameURL: string }
 
@@ -113,13 +110,6 @@ const ConnectFour = ({ gameId, gameURL }: Props) => {
 
   return (
     <div className="flex flex-col gap-4 flex-1 items-center justify-center">
-      <h1
-        className={
-          "absolute top-2 left-2 text-2xl text-center text-customBlack dark:text-primary " + shantell.className
-        }
-      >
-        Tic Tac Toe
-      </h1>
       <div className="flex-1 w-full flex flex-row justify-evenly items-center">
         <UserAvatar
           avatar={game?.players?.[0]?.avatar}
