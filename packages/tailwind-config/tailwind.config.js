@@ -17,6 +17,10 @@ module.exports = {
         highlight: "#078080",
         tertiary: "#f8f5f2",
         customBlack: "#232323",
+        dark: {
+          black: "#16161a",
+          gray: "#242629",
+        },
       },
     },
   },
