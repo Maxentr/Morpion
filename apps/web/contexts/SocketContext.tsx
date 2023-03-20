@@ -8,31 +8,29 @@ import React, {
   useState,
 } from "react"
 import { io, Socket } from "socket.io-client"
-import type {} from "shared-utils/types/socket"
-import {
+import type {
   GetClientEvents,
-  ServerEvents,
+  GetServerEvents,
   SocketNamespaces,
-  TicTacToe,
 } from "shared-utils"
 
-type DynamicSocket<N extends SocketNamespaces = "default"> = Socket<
-  ServerEvents<TicTacToe>,
+export type DynamicSocket<N extends SocketNamespaces> = Socket<
+  GetServerEvents<N>,
   GetClientEvents<N>
 >
 
-type SocketContextInterface<S extends SocketNamespaces = "default"> = {
+type SocketContextInterface<S extends SocketNamespaces> = {
   socket: DynamicSocket<S> | undefined
   getSocket: () => DynamicSocket<S> | undefined
   /** if useSocket is typed with a namespace, connect can only be called with the same namespace */
-  connect: <N extends S extends "default" ? SocketNamespaces : S>(
-    namespace?: N,
-  ) => DynamicSocket<N>
+  connect: <N extends SocketNamespaces>(namespace?: N) => DynamicSocket<N>
 }
-const SocketContext = createContext({} as SocketContextInterface)
+const SocketContext = createContext(
+  {} as SocketContextInterface<SocketNamespaces>,
+)
 
 const SocketContextProvider = ({ children }: PropsWithChildren) => {
-  const [socket, setSocket] = useState<DynamicSocket>()
+  const [socket, setSocket] = useState<DynamicSocket<SocketNamespaces>>()
 
   useEffect(() => {
     return () => {
@@ -43,7 +41,7 @@ const SocketContextProvider = ({ children }: PropsWithChildren) => {
   const connect = (namespace?: SocketNamespaces) => {
     if (socket) socket.disconnect()
 
-    const newSocket = io(`http://localhost:3001/${namespace}`, {
+    const newSocket = io(`${process.env.NEXT_PUBLIC_API_URL}/${namespace}`, {
       transports: ["websocket"],
     })
 

@@ -1,34 +1,51 @@
-import { Game } from "./Game"
+import { Game, GameToJSON, IGame } from "./Game"
 import { Player } from "./Player"
 
-export class TicTacToe extends Game {
+export interface TicTacToeToJSON extends GameToJSON {
   board: string[][]
+}
+
+interface ITicTacToe extends IGame {
+  play(playerSocketID: string, x: number, y: number): void
+  checkWin(): Player | "draw" | undefined
+  toJSON(): TicTacToeToJSON
+}
+
+export class TicTacToe extends Game implements ITicTacToe {
+  private _board: string[][] = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ]
 
   constructor(privateGame: boolean = false) {
     super(2, privateGame)
-    this.board = [
-      ["", "", ""],
-      ["", "", ""],
-      ["", "", ""],
-    ]
 
     return this
   }
 
-  isAvailable(x: number, y: number): boolean {
+  private get board() {
+    return this._board
+  }
+  private set board(value: string[][]) {
+    this._board = value
+  }
+
+  private isSlotAvailable(x: number, y: number) {
     return this.board[x][y] === ""
   }
 
-  play(playerSocketID: string, x: number, y: number): void {
+  play(playerSocketID: string, x: number, y: number) {
     const player = this.getPlayer(playerSocketID)
 
     if (!player || this.status !== "playing") return
     if (this.players[this.turn].socketID !== player.socketID) return
 
-    if (this.isAvailable(x, y)) this.board[x][y] = this.turn === 0 ? "X" : "O"
+    if (this.isSlotAvailable(x, y))
+      this.board[x][y] = this.turn === 0 ? "X" : "O"
   }
 
-  checkWin(): Player | "draw" | undefined {
+  checkWin() {
     const board = this.board
     const player = this.players[this.turn]
     const symbol = this.turn === 0 ? "X" : "O"
@@ -76,12 +93,19 @@ export class TicTacToe extends Game {
     return undefined
   }
 
-  override reset(): void {
+  override reset() {
     super.reset()
     this.board = [
       ["", "", ""],
       ["", "", ""],
       ["", "", ""],
     ]
+  }
+
+  override toJSON() {
+    return {
+      ...super.toJSON(),
+      board: this.board,
+    }
   }
 }

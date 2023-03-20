@@ -1,23 +1,23 @@
 import { Namespace } from "socket.io"
-import ticTacToeController from "./controller"
 import {
+  ConnectFourToJSON,
   createPlayer,
   CreatePlayer,
   GetClientEvents,
   joinGame,
   JoinGame,
-  playTicTacToe,
-  PlayTicTacToe,
+  playConnectFour,
+  PlayConnectFour,
   ServerGameEvents,
-  TicTacToeToJSON,
 } from "shared-utils"
+import ConnectFourController from "./controller"
 
-const instance = ticTacToeController.getInstance()
+const instance = ConnectFourController.getInstance()
 
-const ticTacToeRouter = (
+const connectFourRouter = (
   namespace: Namespace<
-    GetClientEvents<"tic-tac-toe">,
-    ServerGameEvents<TicTacToeToJSON>
+    GetClientEvents<"connect-four">,
+    ServerGameEvents<ConnectFourToJSON>
   >,
 ) => {
   namespace.on("connection", (socket) => {
@@ -65,12 +65,12 @@ const ticTacToeRouter = (
       }
     })
 
-    socket.on("play", (data: PlayTicTacToe) => {
+    socket.on("play", (data: PlayConnectFour) => {
       try {
         // Check if the player is valid
-        const { gameId, x, y } = playTicTacToe.parse(data)
+        const { gameId, x } = playConnectFour.parse(data)
 
-        instance.play(socket, gameId, x, y)
+        instance.play(socket, gameId, x)
       } catch (error) {
         console.error(`Error while playing a game : ${error}`)
       }
@@ -95,4 +95,4 @@ const ticTacToeRouter = (
   })
 }
 
-export default ticTacToeRouter
+export default connectFourRouter

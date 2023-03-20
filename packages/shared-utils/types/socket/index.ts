@@ -1,5 +1,3 @@
-import { GetClientEvents } from "./client"
-import { ServerEvents } from "./server"
-import { SocketNamespaces } from "./common"
-
-export type { GetClientEvents, ServerEvents, SocketNamespaces }
+export * from "./client"
+export * from "./server"
+export * from "./common"

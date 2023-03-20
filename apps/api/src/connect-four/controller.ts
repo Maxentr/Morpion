@@ -5,47 +5,47 @@ import {
   GetClientEvents,
   Player,
   ServerGameEvents,
-  TicTacToe,
-  TicTacToeToJSON,
+  ConnectFour,
+  ConnectFourToJSON,
 } from "shared-utils"
 
-export type TicTacToeSocket = Socket<
-  GetClientEvents<"tic-tac-toe">,
-  ServerGameEvents<TicTacToeToJSON>
+export type ConnectFourSocket = Socket<
+  GetClientEvents<"connect-four">,
+  ServerGameEvents<ConnectFourToJSON>
 >
-export default class TicTacToeController extends GameController<
-  TicTacToe,
-  TicTacToeSocket
+export default class ConnectFourController extends GameController<
+  ConnectFour,
+  ConnectFourSocket
 > {
-  private static instance: TicTacToeController
+  private static instance: ConnectFourController
 
   private constructor() {
-    super("tic-tac-toe")
+    super("connect-four")
   }
 
-  static getInstance(): TicTacToeController {
-    if (!TicTacToeController.instance) {
-      TicTacToeController.instance = new TicTacToeController()
+  static getInstance(): ConnectFourController {
+    if (!ConnectFourController.instance) {
+      ConnectFourController.instance = new ConnectFourController()
     }
 
-    return TicTacToeController.instance
+    return ConnectFourController.instance
   }
 
   async create(
-    socket: TicTacToeSocket,
+    socket: ConnectFourSocket,
     player: CreatePlayer,
     isPrivate = true,
   ) {
-    const game = new TicTacToe(isPrivate)
+    const game = new ConnectFour(isPrivate)
     this.onCreate(socket, player, game)
   }
 
-  async play(socket: TicTacToeSocket, gameId: string, x: number, y: number) {
+  async play(socket: ConnectFourSocket, gameId: string, x: number) {
     const game = this.getGame(gameId)
     if (!game) return
     if (!game.checkTurn(socket.id)) return
 
-    game.play(socket.id, x, y)
+    game.play(socket.id, x)
     const gameState = game.checkWin()
 
     if (gameState === "draw") this.onDraw(socket, game)

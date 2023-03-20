@@ -1,3 +1,10 @@
 {
-  "extends": "tsconfig/api.json"
+  "extends": "tsconfig/api.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./*"]
+    },
+    "outDir": "dist"
+  }
 }

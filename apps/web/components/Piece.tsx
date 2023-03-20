@@ -20,7 +20,7 @@ type Props = {
   className?: string
 }
 
-const Circle = ({ className }: Props) => {
+const Piece = ({ className }: Props) => {
   return (
     <motion.svg
       xmlns="http://www.w3.org/2000/svg"
@@ -38,16 +38,13 @@ const Circle = ({ className }: Props) => {
         cy="12"
         r="7.4"
         initial={{
-          pathLength: 0,
-          opacity: 0,
+          scale: 0.2,
         }}
         animate={{
-          pathLength: 1,
-          opacity: 1,
+          scale: 1,
         }}
         transition={{
-          pathLength: { type: "spring", duration: 1, bounce: 0 },
-          opacity: { duration: 0.01 },
+          scale: { type: "tween", duration: 0.2, bounce: 0 },
         }}
         strokeDasharray={0}
       />
@@ -55,4 +52,4 @@ const Circle = ({ className }: Props) => {
   )
 }
 
-export default Circle
+export default Piece

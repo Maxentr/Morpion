@@ -7,9 +7,8 @@ import { useUser } from "~/contexts/UserContext"
 
 const withAuth = <P extends object>(
   WrappedComponent: ComponentType<P>,
-): React.FC<P> => {
-  // eslint-disable-next-line react/display-name
-  return (props: unknown) => {
+): React.FC<P> =>
+  function UpdatedComponent(props: P) {
     const { name, avatar } = useUser()
     const { socket } = useSocket()
     const router = useRouter()
@@ -24,11 +23,10 @@ const withAuth = <P extends object>(
     }, [router, avatar, name, socket])
 
     if (verified) {
-      return <WrappedComponent {...(props as P)} />
+      return <WrappedComponent {...props} />
     } else {
       return null
     }
   }
-}
 
 export default withAuth

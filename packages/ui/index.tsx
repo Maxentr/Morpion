@@ -1,5 +1,6 @@
-import * as React from "react"
-import Button from "./src/Button"
-import Input from "./src/Input"
+export * from "./src/Select"
+export * from "./src/Button"
+export * from "./src/Input"
+export * from "./src/ThemeSelect"
 
-export { Button, Input }
+

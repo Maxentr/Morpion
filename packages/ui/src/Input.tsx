@@ -34,14 +34,14 @@ const Input = ({
       {label && (
         <label
           htmlFor="name"
-          className={`${error ? "text-red-500" : "text-customBlack"}`}
+          className={`${error ? "text-red-500" : "text-customBlack dark:text-primary"}`}
         >
           {label}
         </label>
       )}
       <div className="flex flex-col">
         <input
-          className={`border ${
+          className={`bg-primary dark:bg-dark-gray text-customBlack dark:text-primary border ${
             error ? "border-red-500" : "border-customBlack"
           } ${getSizeStyle[size]}} ${className}`}
           {...props}
@@ -52,4 +52,4 @@ const Input = ({
   )
 }
 
-export default Input
+export { Input }

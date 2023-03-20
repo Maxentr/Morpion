@@ -8,7 +8,8 @@
   ],
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "dotenv -- turbo run dev",
+    "prod": "dotenv -- turbo run prod",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "commit": "git-cz",
@@ -29,7 +30,8 @@
     "inquirer": "8",
     "prettier": "latest",
     "turbo": "latest",
-    "husky": "^8.0.0"
+    "husky": "^8.0.0",
+    "dotenv-cli": "latest"
   },
   "engines": {
     "node": ">=14.0.0"
