@@ -1,7 +1,7 @@
 import fastify from "fastify"
 import fastifyIO from "fastify-socket.io"
+import connectFourRouter from "./src/connect-four/router"
 import ticTacToeRouter from "./src/tic-tac-toe/router"
-import registerTicTacToeNamespace from "./src/tic-tac-toe/router"
 
 const server = fastify()
 
@@ -15,6 +15,7 @@ server.ready((err) => {
   )
 
   ticTacToeRouter(server.io.of("/tic-tac-toe"))
+  connectFourRouter(server.io.of("/connect-four"))
 })
 
 server.listen({ port: 3001 }, (err, address) => {
