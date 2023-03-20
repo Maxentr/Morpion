@@ -8,7 +8,7 @@ const layout = ({ children }: PropsWithChildren) => {
     <html lang="en">
       <head></head>
       <body>
-        <div className="absolute inset-0 bg-tertiary flex flex-col">
+        <div className="absolute inset-0 bg-tertiary dark:bg-dark-gray flex flex-col">
           <SocketContextProvider>
             <UserContextProvider>{children}</UserContextProvider>
           </SocketContextProvider>

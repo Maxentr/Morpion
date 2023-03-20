@@ -26,12 +26,12 @@ const UserAvatar = ({ avatar, pseudo, score }: Props) => {
         </div>
       )}
       {pseudo && (
-        <p className="text-center text-lg w-[100px] text-ellipsis overflow-hidden whitespace-nowrap">
+        <p className="text-customBlack dark:text-primary text-center text-lg w-[100px] text-ellipsis overflow-hidden whitespace-nowrap">
           {pseudo}
         </p>
       )}
-      {score && (
-        <p className="text-center text-base w-[100px] text-ellipsis overflow-hidden whitespace-nowrap">
+      {typeof score === "number" && (
+        <p className="text-customBlack dark:text-primary text-center text-base w-[100px] text-ellipsis overflow-hidden whitespace-nowrap">
           {score}
         </p>
       )}

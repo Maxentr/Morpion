@@ -108,7 +108,7 @@ const TicTacToe = ({ gameId, gameURL }: Props) => {
     <div className="flex flex-col gap-4 flex-1 items-center justify-center">
       <h1
         className={
-          "absolute top-2 left-2 text-2xl text-center " + shantell.className
+          "absolute top-2 left-2 text-2xl text-center text-customBlack dark:text-primary " + shantell.className
         }
       >
         Tic Tac Toe
@@ -120,13 +120,13 @@ const TicTacToe = ({ gameId, gameURL }: Props) => {
           score={game?.players?.[0]?.score}
         />
         <div className="flex flex-col gap-2">
-          <div className="grid grid-cols-3 gap-0.5 bg-gray-200 rounded-xl overflow-hidden shadow">
+          <div className="grid grid-cols-3 gap-0.5 bg-gray-200 dark:bg-gray-800 rounded-xl overflow-hidden shadow">
             {game?.board.map((row, rowIndex) =>
               row.map((box, colIndex) => (
                 <div
                   key={rowIndex + ", " + colIndex}
                   onClick={() => handleSelection(rowIndex, colIndex)}
-                  className={`bg-white flex items-center justify-center w-24 h-24 md:w-36 md:h-36 ${
+                  className={`bg-primary dark:bg-gray-700 flex items-center justify-center w-24 h-24 md:w-36 md:h-36 ${
                     box ? "cursor-default" : turn && "cursor-pointer"
                   }`}
                 >
@@ -140,7 +140,7 @@ const TicTacToe = ({ gameId, gameURL }: Props) => {
               )),
             )}
           </div>
-          <p className="text-center">{information}</p>
+          <p className="text-customBlack dark:text-primary text-center">{information}</p>
           {game?.status === "lobby" && <ClipboardInput value={gameURL} />}
           {game?.status === "finished" && (
             <Button onClick={handleReplay} label="Rejouer" />

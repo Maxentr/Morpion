@@ -15,9 +15,9 @@ const getColorStyle = {
 
 const getTextColorStyle: Record<string, string> = {
   filledprimary: "text-black",
-  filledsecondary: "text-white",
-  filledtertiary: "text-white",
-  filledhighlight: "text-white",
+  filledsecondary: "text-primary",
+  filledtertiary: "text-primary",
+  filledhighlight: "text-primary",
   filledcustomBlack: "text-primary",
   outlinedprimary: "text-customBlack disabled:text-opacity-50",
   outlinedsecondary: "text-secondary disabled:text-opacity-50",

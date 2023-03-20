@@ -52,8 +52,8 @@ const GamePage = ({ params }: Props) => {
   return (
     <>
       <div className="flex flex-1 items-center justify-center">
-        <div className="bg-primary border border-customBlack px-16 py-12 rounded-xl w-3/6 max-w-2xl flex flex-col items-center">
-          <h1 className={"text-3xl text-center mb-2 " + shantell.className}>
+        <div className="bg-primary dark:bg-dark-black border border-customBlack px-16 py-12 rounded-xl w-3/6 max-w-2xl flex flex-col items-center">
+          <h1 className={"text-3xl text-center text-customBlack dark:text-primary mb-2 " + shantell.className}>
             {params.game}
           </h1>
           <SelectAvatar containerClassName="mb-2" onChange={setAvatar} />

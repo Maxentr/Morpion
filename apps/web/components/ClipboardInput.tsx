@@ -18,7 +18,7 @@ const ClipboardInput = ({ value }: Props) => {
   return (
     <input
       type="text"
-      className="text-center w-full border outline-none rounded"
+      className="bg-primary dark:bg-gray-500 text-customBlack dark:text-primary text-center w-full border border-primary dark:border-gray-800 outline-none rounded"
       onClick={handleClipboard}
       defaultValue={value}
     />

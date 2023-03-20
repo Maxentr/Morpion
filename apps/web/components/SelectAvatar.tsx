@@ -56,14 +56,14 @@ const SelectAvatar = ({ containerClassName, onChange }: Props) => {
   return (
     <div className={`flex flex-row gap-2 items-center ${containerClassName}`}>
       <ChevronLeftIcon
-        className="h-6 w-6 cursor-pointer"
+        className="h-6 w-6 cursor-pointer dark:text-primary"
         onClick={handlePrevious}
       />
       <div className="flex flex-col gap-2">
         <UserAvatar avatar={availableAvatars[index]} />
       </div>
       <ChevronRightIcon
-        className="h-6 w-6 cursor-pointer"
+        className="h-6 w-6 cursor-pointer dark:text-primary"
         onClick={handleNext}
       />
     </div>

@@ -115,7 +115,7 @@ const ConnectFour = ({ gameId, gameURL }: Props) => {
     <div className="flex flex-col gap-4 flex-1 items-center justify-center">
       <h1
         className={
-          "absolute top-2 left-2 text-2xl text-center " + shantell.className
+          "absolute top-2 left-2 text-2xl text-center text-customBlack dark:text-primary " + shantell.className
         }
       >
         Tic Tac Toe
@@ -127,16 +127,16 @@ const ConnectFour = ({ gameId, gameURL }: Props) => {
           score={game?.players?.[0]?.score}
         />
         <div className="flex flex-col gap-2 items-center">
-          <div className="flex flex-col gap-2 rounded-xl w-fit h-fit overflow-hidden bg-blue-800 p-6">
+          <div className="flex flex-col gap-2 rounded-xl w-fit h-fit overflow-hidden bg-blue-800 dark:bg-blue-900 p-6">
             {game?.board.map((row, y) => (
               <div
                 key={y}
-                className="flex flex-row gap-2 bg-blue-800"
+                className="flex flex-row gap-2 bg-blue-800 dark:bg-blue-900"
               >
                 {row.map((box, x) => (
                   <div
                     key={`${x}-${y}`}
-                    className={`w-16 h-16 rounded-full grid-cols-1 bg-tertiary flex items-center justify-center ${
+                    className={`w-16 h-16 rounded-full grid-cols-1 bg-tertiary dark:bg-gray-400 flex items-center justify-center ${
                       box
                         ? "cursor-default"
                         : turn && "cursor-pointer bg-tertiary"
@@ -155,7 +155,9 @@ const ConnectFour = ({ gameId, gameURL }: Props) => {
               </div>
             ))}
           </div>
-          <p className="text-center mt-2">{information}</p>
+          <p className="text-customBlack dark:text-primary text-center mt-2">
+            {information}
+          </p>
           {game?.status === "lobby" && <ClipboardInput value={gameURL} />}
           {game?.status === "finished" && (
             <Button onClick={handleReplay} label="Rejouer" />
