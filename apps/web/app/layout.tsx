@@ -1,17 +1,15 @@
 import React, { PropsWithChildren } from "react"
-import SocketContextProvider from "~/contexts/SocketContext"
-import UserContextProvider from "~/contexts/UserContext"
+import Header from "~/components/Header"
 import "~/styles/globals.css"
+import Providers from "./providers"
 
 const layout = ({ children }: PropsWithChildren) => {
   return (
-    <html lang="en">
+    <html suppressHydrationWarning>
       <head></head>
       <body>
         <div className="absolute inset-0 bg-tertiary dark:bg-dark-gray flex flex-col">
-          <SocketContextProvider>
-            <UserContextProvider>{children}</UserContextProvider>
-          </SocketContextProvider>
+          <Providers>{children}</Providers>
         </div>
       </body>
     </html>
