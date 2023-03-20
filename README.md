@@ -29,21 +29,21 @@ pnpm dev --filter PACKAGE_NAME
 
 ## Available games
 
-| Game        | Status      |
-| :---------- | :---------- |
-| Tic Tac Toe | Playable    |
-| Connect 4   | In progress |
+| Game        | Status   |
+| :---------- | :------- |
+| Tic Tac Toe | Playable |
+| Connect 4   | Playable |
 
 ## TODO
 
 - [x] Abstract some classes
 - [x] Add a parse function in classes to parse the data for the client
 - [x] Refactor classes types
-- [X] Use ENV variables
-- [X] Handle player disconnects
-- [ ] End game modal (win, draw, disconnect)
-- [ ] Share the game page by being as flexible as possible
-- [ ] Create connect 4 game
-- [ ] Dark mode
+- [x] Use ENV variables
+- [x] Handle player disconnects
+- [x] Share the game page by being as flexible as possible (can be improved)
+- [x] Create connect 4 game
+- [x] Dark mode
 - [ ] Translations (en, fr)
+- [ ] Responsive
 - [ ] Deploy to Vercel and Fly.io (monorepo seems to be a problem for Fly.io)
