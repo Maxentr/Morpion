@@ -30,7 +30,6 @@ const Index = () => {
               className="w-full"
               onClick={() => handlGameSelection(game as GameNames)}
               label={game === "tic-tac-toe" ? "Morpion" : "Puissance 4"}
-              disabled={game === "connect-four"}
             />
           ))}
         </div>

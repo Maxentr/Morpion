@@ -50,7 +50,6 @@ export class ConnectFour extends Game implements IConnectFour {
     if (this.players[this.turn].socketID !== player.socketID) return
 
     const y = this.getColY(x)
-    console.log(x, y)
     if (typeof y === "number") this.board[y][x] = this.getSymbol()
   }
 

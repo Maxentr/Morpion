@@ -2,6 +2,7 @@
 
 import React from "react"
 import { GameNames } from "shared-utils"
+import ConnectFour from "./(games)/ConnectFour"
 import TicTacToe from "./(games)/TicTacToe"
 
 type Props = { params: { game: GameNames; id: string } }
@@ -11,7 +12,7 @@ const Page = ({ params }: Props) => {
 
   const HandleGame = {
     "tic-tac-toe": <TicTacToe gameId={params.id} gameURL={gameURL} />,
-    "connect-four": "Connect Four",
+    "connect-four": <ConnectFour gameId={params.id} gameURL={gameURL} />,
   }
 
   return HandleGame[params.game]
