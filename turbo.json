@@ -10,11 +10,11 @@
     },
     "dev": {
       "cache": false,
-      "env": ["API_IP_ADDRESS", "API_PORT", "NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_APP_URL"]
+      "env": ["API_IP_ADDRESS", "API_PORT", "NEXT_PUBLIC_API_URL"]
     },
     "prod": {
       "dependsOn": ["build"],
-      "env": ["API_IP_ADDRESS", "API_PORT", "NEXT_PUBLIC_API_URL", "NEXT_PUBLIC_APP_URL"]
+      "env": ["API_IP_ADDRESS", "API_PORT", "NEXT_PUBLIC_API_URL"]
     }
   }
 }

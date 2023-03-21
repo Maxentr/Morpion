@@ -8,7 +8,7 @@ import TicTacToe from "./(games)/TicTacToe"
 type Props = { params: { game: GameNames; id: string } }
 
 const Page = ({ params }: Props) => {
-  const gameURL = `${process.env.NEXT_PUBLIC_APP_URL}/${params.game}?gameId=${params.id}`
+  const gameURL = `${window.location.origin}/${params.game}?gameId=${params.id}`
 
   const HandleGame = {
     "tic-tac-toe": <TicTacToe gameId={params.id} gameURL={gameURL} />,
