@@ -18,7 +18,10 @@ server.ready((err) => {
   connectFourRouter(server.io.of("/connect-four"))
 })
 
-server.listen({ port: 3001 }, (err, address) => {
+const host = process.env.API_IP_ADDRESS || "localhost"
+const port = +(process.env.API_PORT || 3000)
+
+server.listen({ host: host, port: port }, (err, address) => {
   if (err) {
     console.error(err)
     process.exit(1)

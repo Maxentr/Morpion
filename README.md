@@ -44,6 +44,6 @@ pnpm dev --filter PACKAGE_NAME
 - [x] Share the game page by being as flexible as possible (can be improved)
 - [x] Create connect 4 game
 - [x] Dark mode
+- [x] Deploy to Vercel and Railway
 - [ ] Translations (en, fr)
 - [ ] Responsive
-- [ ] Deploy to Vercel and Fly.io (monorepo seems to be a problem for Fly.io)

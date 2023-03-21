@@ -12,7 +12,7 @@ import Piece from "~/components/Piece"
 type Props = { gameId: string; gameURL: string }
 
 const ConnectFour = ({ gameId, gameURL }: Props) => {
-  const { socket } = useSocket("tic-tac-toe")
+  const { socket } = useSocket("connect-four")
 
   const { name } = useUser()
 
