@@ -5,7 +5,7 @@ export type PlayerToJSON = Pick<
   "name" | "socketID" | "avatar" | "score" | "wantReplay"
 >
 
-interface IPlayer {
+export interface IPlayer {
   readonly name: string
   readonly socketID: string
   readonly avatar: Avatar
@@ -45,7 +45,7 @@ export class Player implements IPlayer {
   public get score() {
     return this._score
   }
-  private set score(value: number) {
+  public set score(value: number) {
     this._score = value
   }
 
