@@ -3,7 +3,13 @@ import { SocketNamespaces } from "types/socket/common"
 import { GameToJSON } from "../../class/Game"
 import { PlayerToJSON } from "../../class/Player"
 
+export type ServerErrorMessage =
+  | "game-not-found"
+  | "game-is-full"
+  | "game-is-already-started"
+
 export type ServerGameEvents<T extends GameToJSON> = {
+  error: (error: ServerErrorMessage) => void
   joinGame: (game: T) => void
   game: (game: T) => void
   winner: (game: T, winner: PlayerToJSON) => void

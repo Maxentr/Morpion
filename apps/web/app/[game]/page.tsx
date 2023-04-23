@@ -7,7 +7,14 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useSocket } from "~/contexts/SocketContext"
 import SelectAvatar from "~/components/SelectAvatar"
 import { useUser } from "~/contexts/UserContext"
-import { CreatePlayer, GameNames, TicTacToeToJSON } from "shared-utils"
+import {
+  CreatePlayer,
+  GameNames,
+  ServerErrorMessage,
+  TicTacToeToJSON,
+} from "shared-utils"
+import { getErrorMessage } from "~/utils/error-handler"
+import { useToast } from "~/contexts/ToastContext"
 
 const shantell = Shantell_Sans({ subsets: ["latin"], weight: "700" })
 
@@ -16,6 +23,7 @@ type Props = { params: { game: GameNames } }
 const GamePage = ({ params }: Props) => {
   const { name, avatar, setName, setAvatar, saveUserInLocalStorage } = useUser()
   const { connect } = useSocket()
+  const { newToast } = useToast()
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -47,13 +55,27 @@ const GamePage = ({ params }: Props) => {
       setLoading(false)
       router.push(`/${params.game}/${game.id}`)
     })
+    socket?.on("error", (error: ServerErrorMessage) => {
+      newToast({
+        title: "Erreur",
+        description: getErrorMessage(error),
+        status: "error",
+      })
+      router.push(`/${params.game}`)
+      setLoading(false)
+    })
   }
 
   return (
     <>
       <div className="flex flex-1 items-center justify-center">
         <div className="bg-primary dark:bg-dark-black border border-customBlack px-16 py-12 rounded-xl w-3/6 max-w-2xl flex flex-col items-center">
-          <h1 className={"text-3xl text-center text-customBlack dark:text-primary mb-2 " + shantell.className}>
+          <h1
+            className={
+              "text-3xl text-center text-customBlack dark:text-primary mb-2 " +
+              shantell.className
+            }
+          >
             {params.game}
           </h1>
           <SelectAvatar containerClassName="mb-2" onChange={setAvatar} />

@@ -1,7 +1,6 @@
 import React, { PropsWithChildren } from "react"
-import Header from "~/components/Header"
-import "~/styles/globals.css"
 import Providers from "./providers"
+import "~/styles/globals.css"
 
 const layout = ({ children }: PropsWithChildren) => {
   return (

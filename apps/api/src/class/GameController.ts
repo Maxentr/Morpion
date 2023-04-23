@@ -65,7 +65,16 @@ export abstract class GameController<G extends Game, S extends Socket> {
 
   async onJoin(socket: S, gameId: string, player: CreatePlayer) {
     const game = this.getGame(gameId)
-    if (!game || game.isFull()) return
+    if (!game) {
+      socket.emit("error", "game-not-found")
+      return
+    } else if (game.isFull()) {
+      socket.emit("error", "game-is-full")
+      return
+    } else if (game.status !== "lobby") {
+      socket.emit("error", "game-is-already-started")
+      return
+    }
 
     const newPlayer = new Player(player.name, socket.id, player.avatar)
     game.addPlayer(newPlayer)
