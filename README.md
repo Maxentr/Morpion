@@ -45,5 +45,9 @@ pnpm dev --filter PACKAGE_NAME
 - [x] Create connect 4 game
 - [x] Dark mode
 - [x] Deploy to Vercel and Railway
-- [ ] Translations (en, fr)
+- [x] Handle toast messages
 - [ ] Responsive
+- [ ] Better replay system
+- [ ] Improve turn display
+- [ ] Add JoSky game
+- [ ] Translations (en, fr) (horrible with next experimental `app` folder)
